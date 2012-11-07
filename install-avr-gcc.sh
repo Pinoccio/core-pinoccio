@@ -2,7 +2,7 @@
 
 #
 # install_avr_gcc.sh, avr-gcc build and installation script
-# Last updated: 05/28/06
+# Last updated: 2012/11/06
 #
 # run this script with "sh ./install_avr_gcc.sh"
 #
