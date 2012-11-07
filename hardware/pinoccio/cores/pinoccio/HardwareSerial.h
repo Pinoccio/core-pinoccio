@@ -63,8 +63,7 @@ class HardwareSerial : public Stream
   extern HardwareSerial Serial;
 #endif
 #if defined(UBRR1H)
-  //TODO: need to compile with avr-gcc >= 4.7.1 to handle global issue
-  //extern HardwareSerial Serial1;
+  extern HardwareSerial Serial1;
 #endif
 extern void serialEventRun(void) __attribute__((weak));
 

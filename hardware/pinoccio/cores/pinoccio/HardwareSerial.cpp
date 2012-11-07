@@ -59,9 +59,8 @@ struct ring_buffer
   ring_buffer tx_buffer  =  { { 0 }, 0, 0 };
 #endif
 #if defined(UBRR1H)
-  //TODO: need to compile with avr-gcc >= 4.7.1 to handle global issue
-  //ring_buffer rx_buffer1  =  { { 0 }, 0, 0 };
-  //ring_buffer tx_buffer1  =  { { 0 }, 0, 0 };
+  ring_buffer rx_buffer1  =  { { 0 }, 0, 0 };
+  ring_buffer tx_buffer1  =  { { 0 }, 0, 0 };
 #endif
 #if defined(UBRR2H)
   ring_buffer rx_buffer2  =  { { 0 }, 0, 0 };
@@ -324,8 +323,7 @@ size_t HardwareSerial::write(uint8_t c)
 #endif
 
 #if defined(UBRR1H)
-  //TODO: need to compile with avr-gcc >= 4.7.1 to handle global issue
-  // HardwareSerial Serial1(&rx_buffer1, &tx_buffer1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UDR1, RXEN1, TXEN1, RXCIE1, UDRIE1, U2X1);
+  HardwareSerial Serial1(&rx_buffer1, &tx_buffer1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UDR1, RXEN1, TXEN1, RXCIE1, UDRIE1, U2X1);
 #endif
 
 #endif // whole file
