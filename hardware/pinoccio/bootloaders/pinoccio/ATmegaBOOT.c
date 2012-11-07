@@ -115,10 +115,8 @@
 #define BL_PIN  PINF
 #define BL0     PINF7
 #define BL1     PINF6
-#elif defined __AVR_ATmega1280__ 
+#elif defined __AVR_ATmega1280__ || defined __AVR_ATmega128RFA1__
 /* we just don't do anything for the MEGA and enter bootloader on reset anyway*/
-#elif defined __AVR_ATmega128RFA1__
-/* the Zigduino follows the MEGA pattern -- PN 100406 */
 #else
 /* other ATmegas have only one UART, so only one pin is defined to enter bootloader */
 #define BL_DDR  DDRD
@@ -136,11 +134,10 @@
 #define LED_PIN  PINB
 #define LED      PINB7
 #elif defined __AVR_ATmega128RFA1__
-/* onboard LED for the Zigduino is connected to pin PB1 (SCK) -- PN 100406 */
 #define LED_DDR  DDRB
 #define LED_PORT PORTB
 #define LED_PIN  PINB
-#define LED      PINB1
+#define LED      PINB6
 #else
 /* Onboard LED is connected to pin PB5 in Arduino NG, Diecimila, and Duomilanuove */ 
 /* other boards like e.g. Crumb8, Crumb168 are using PB2 */
@@ -151,8 +148,7 @@
 #endif
 
 /* monitor functions will only be compiled when using ATmega128, due to bootblock size constraints */
-/* and for the Zigduino, since we've got the space -- PN 100406 */
-#if defined(__AVR_ATmega128__) || defined(__AVR_ATmega1280__) /* || defined(__AVR_ATmega128RFA1__) */
+#if defined(__AVR_ATmega128__) || defined(__AVR_ATmega1280__)
 #define MONITOR 1
 #endif
 
@@ -319,7 +315,6 @@ int main(void)
 	/* We run the bootloader regardless of the state of this pin.  Thus, don't
 	put it in a different state than the other pins.  --DAM, 070709
 	This also applies to Arduino Mega -- DC, 080930
-	And the Zigduino -- PN 100406
 	BL_DDR &= ~_BV(BL);
 	BL_PORT |= _BV(BL);
 	*/
@@ -372,9 +367,7 @@ int main(void)
 
 
 	/* initialize UART(s) depending on CPU defined */
-	/* Zigduino uses the same setup */
-#if defined(__AVR_ATmega128__) || defined(__AVR_ATmega1280__) ||\
-    defined(__AVR_ATmega128RFA1__)
+#if defined(__AVR_ATmega128__) || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega128RFA1__)
 	if(bootuart == 1) {
 		UBRR0L = (uint8_t)(F_CPU/(BAUD_RATE*16L)-1);
 		UBRR0H = (F_CPU/(BAUD_RATE*16L)-1) >> 8;
@@ -433,7 +426,6 @@ int main(void)
 	to supress line noise that prevents the bootloader from
 	timing out (DAM: 20070509) */
 	/* feature added to the Arduino Mega --DC: 080930 */
-	/* feature enabled for the Zigduino -- PN 100406 */
 	DDRE &= ~_BV(PINE0);
 	PORTE |= _BV(PINE0);
 #endif
@@ -706,9 +698,7 @@ int main(void)
 					 "rjmp	write_page	\n\t"
 					 "block_done:		\n\t"
 					 "clr	__zero_reg__	\n\t"	//restore zero register
-#if defined __AVR_ATmega168__  || __AVR_ATmega328P__ || __AVR_ATmega128__ || __AVR_ATmega1280__ || __AVR_ATmega1281__  
-					 : "=m" (SPMCSR) : "M" (PAGE_SIZE) : "r0","r16","r17","r24","r25","r28","r29","r30","r31"
-#elif defined __AVR_ATmega128RFA1__
+#if defined __AVR_ATmega168__  || __AVR_ATmega328P__ || __AVR_ATmega128__ || __AVR_ATmega1280__ || __AVR_ATmega1281__ ||  defined __AVR_ATmega128RFA1__
 					 : "=m" (SPMCSR) : "M" (PAGE_SIZE) : "r0","r16","r17","r24","r25","r28","r29","r30","r31"
 #else
 					 : "=m" (SPMCR) : "M" (PAGE_SIZE) : "r0","r16","r17","r24","r25","r28","r29","r30","r31"
@@ -811,8 +801,6 @@ int main(void)
 			welcome = "ATmegaBOOT / Savvy128 - (C) J.P.Kyle, E.Lins - 050815\n\r";
 #elif defined __AVR_ATmega1280__ 
 			welcome = "ATmegaBOOT / Arduino Mega - (C) Arduino LLC - 090930\n\r";
-#elif  defined __AVR_ATmega128RFA1__
-			welcome = "ATmegaBOOT / Zigduino - (C) Logos Electromechanical - 100406\n\r";		
 #endif
 
 			/* turn on LED */
