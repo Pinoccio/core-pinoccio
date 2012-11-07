@@ -19,6 +19,7 @@ export PATH="${PREFIX}/bin:${PATH}"
 export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
 export DYLD_LIBRARY_PATH="${PREFIX}/lib:${DYLD_LIBRARY_PATH}"
 
+# gcc-4.2 tested on OS X.  XCode's clang compiler can cause problems
 export CC=/usr/bin/gcc-4.2
 export CXX=/usr/bin/g++-4.2
 export CPP=/usr/bin/cpp-4.2

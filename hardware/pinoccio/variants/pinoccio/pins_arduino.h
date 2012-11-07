@@ -113,18 +113,18 @@ const uint16_t PROGMEM port_to_input_PGM[] = {
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 	// PORTLIST		
-	// ~: PWM, *: external interrup
+	// ~: PWM, *: external interrupt
 	// -------------------------------------------		
-	PE	, // PE 0 ** D0 ** USART0_RX	
-	PE	, // PE 1 ** D1 ** USART0_TX	
-	PB	, // PB 7 ** D2 ** D2~
-	PE	, // PE 2 ** D3 ** D3
-	PE	, // PE 3 ** D4 ** D4~
-	PE	, // PE 4 ** D5 ** D5*~
-	PE	, // PE 5 ** D6 ** D6*~
-	PE	, // PE 6 ** D7 ** D7*
-	PE	, // PE 7 ** D8 ** D8*
-	PB	, // PB 0 ** D9 ** SPI_SSN
+	PE	, // PE 0 ** D0  ** USART0_RX	
+	PE	, // PE 1 ** D1  ** USART0_TX	
+	PB	, // PB 7 ** D2  ** D2~
+	PE	, // PE 2 ** D3  ** D3
+	PE	, // PE 3 ** D4  ** D4~
+	PE	, // PE 4 ** D5  ** D5*~
+	PE	, // PE 5 ** D6  ** D6*~
+	PE	, // PE 6 ** D7  ** D7*
+	PE	, // PE 7 ** D8  ** D8*
+	PB	, // PB 0 ** D9  ** SPI_SSN
 	PB	, // PB 2 ** D10 ** SPI_MOSI
 	PB	, // PB 3 ** D11 ** SPI_MISO
 	PB	, // PB 1 ** D12 ** SPI_SCK
@@ -140,18 +140,19 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
-	// PIN IN PORT		
+	// PIN IN PORT
+	// ~: PWM, *: external interrupt		
 	// -------------------------------------------		
-	_BV(PE0)	, // PE 0 ** D0 ** USART0_RX
-	_BV(PE1)	, // PE 1 ** D1 ** USART0_TX
-	_BV(PB7)	, // PB 7 ** D2 ** D2~
-	_BV(PE2)	, // PE 2 ** D3 ** D3
-	_BV(PE3)	, // PE 3 ** D4 ** D4~
-	_BV(PE4)	, // PE 4 ** D5 ** D5*~
-	_BV(PE5)	, // PE 5 ** D6 ** D6*~
-	_BV(PE6)	, // PE 6 ** D7 ** D7*
-	_BV(PE7)	, // PE 7 ** D8 ** D8*
-	_BV(PB0)	, // PB 0 ** D9 ** SPI_SSN
+	_BV(PE0)	, // PE 0 ** D0  ** USART0_RX
+	_BV(PE1)	, // PE 1 ** D1  ** USART0_TX
+	_BV(PB7)	, // PB 7 ** D2  ** D2~
+	_BV(PE2)	, // PE 2 ** D3  ** D3
+	_BV(PE3)	, // PE 3 ** D4  ** D4~
+	_BV(PE4)	, // PE 4 ** D5  ** D5*~
+	_BV(PE5)	, // PE 5 ** D6  ** D6*~
+	_BV(PE6)	, // PE 6 ** D7  ** D7*
+	_BV(PE7)	, // PE 7 ** D8  ** D8*
+	_BV(PB0)	, // PB 0 ** D9  ** SPI_SSN
 	_BV(PB2)	, // PB 2 ** D10 ** SPI_MOSI
 	_BV(PB3)	, // PB 3 ** D11 ** SPI_MISO
 	_BV(PB1)	, // PB 1 ** D12 ** SPI_SCK
@@ -168,17 +169,18 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
     // TIMERS		
+    // ~: PWM, *: external interrupt
 	// -------------------------------------------
-    NOT_ON_TIMER 	, // PE 0 ** D0 ** USART0_RX
-	NOT_ON_TIMER 	, // PE 1 ** D1 ** USART0_TX
-	TIMER0A     	, // PB 7 ** D2 ** D2~
-	NOT_ON_TIMER    , // PE 2 ** D3 ** D3
-	TIMER3A      	, // PE 3 ** D4 ** D4~
-	TIMER3B	        , // PE 4 ** D5 ** D5*~
-	TIMER3C      	, // PE 5 ** D6 ** D6*~
-	NOT_ON_TIMER	, // PE 6 ** D7 ** D7*
-	NOT_ON_TIMER    , // PE 7 ** D8 ** D8*
-	NOT_ON_TIMER	, // PB 0 ** D9 ** SPI_SSN
+    NOT_ON_TIMER 	, // PE 0 ** D0  ** USART0_RX
+	NOT_ON_TIMER 	, // PE 1 ** D1  ** USART0_TX
+	TIMER0A     	, // PB 7 ** D2  ** D2~
+	NOT_ON_TIMER    , // PE 2 ** D3  ** D3
+	TIMER3A      	, // PE 3 ** D4  ** D4~
+	TIMER3B	        , // PE 4 ** D5  ** D5*~
+	TIMER3C      	, // PE 5 ** D6  ** D6*~
+	NOT_ON_TIMER	, // PE 6 ** D7  ** D7*
+	NOT_ON_TIMER    , // PE 7 ** D8  ** D8*
+	NOT_ON_TIMER	, // PB 0 ** D9  ** SPI_SSN
 	NOT_ON_TIMER	, // PB 2 ** D10 ** SPI_MOSI
 	NOT_ON_TIMER	, // PB 3 ** D11 ** SPI_MISO
 	NOT_ON_TIMER	, // PB 1 ** D12 ** SPI_SCK
