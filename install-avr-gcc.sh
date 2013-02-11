@@ -81,7 +81,7 @@ UISP_PACKAGE=${UISP}.tar.gz
 UISP_DOWNLOAD=${NONGNU_MIRROR}/uisp/${UISP_PACKAGE}
 UISP_CHECKSUM="b1e499d5a1011489635c1a0e482b1627"
 
-AVRDUDE=avrdude-5.11
+AVRDUDE=avrdude-5.9
 AVRDUDE_PACKAGE=${AVRDUDE}.tar.gz
 AVRDUDE_DOWNLOAD=${NONGNU_MIRROR}/avrdude/${AVRDUDE_PACKAGE}
 AVRDUDE_CHECKSUM="ba62697270b1292146dc56d462f5da14"
@@ -192,16 +192,16 @@ download_and_check() {
 }
 
 echo "Check / download source packages..."
-download_and_check $BINUTILS_PACKAGE  $BINUTILS_DOWNLOAD   $BINUTILS_CHECKSUM &
-download_and_check $GMP_PACKAGE       $GMP_DOWNLOAD        $GMP_CHECKSUM &
-download_and_check $MPFR_PACKAGE      $MPFR_DOWNLOAD       $MPFR_CHECKSUM &
-download_and_check $MPC_PACKAGE       $MPC_DOWNLOAD        $MPC_CHECKSUM &
-download_and_check $GCC_PACKAGE       $GCC_DOWNLOAD        $GCC_CHECKSUM &
-download_and_check $GDB_PACKAGE       $GDB_DOWNLOAD        $GDB_CHECKSUM &
-download_and_check $AVRLIBC_PACKAGE   $AVRLIBC_DOWNLOAD    $AVRLIBC_CHECKSUM &
-download_and_check $UISP_PACKAGE      $UISP_DOWNLOAD       $UISP_CHECKSUM &
+#download_and_check $BINUTILS_PACKAGE  $BINUTILS_DOWNLOAD   $BINUTILS_CHECKSUM &
+#download_and_check $GMP_PACKAGE       $GMP_DOWNLOAD        $GMP_CHECKSUM &
+#download_and_check $MPFR_PACKAGE      $MPFR_DOWNLOAD       $MPFR_CHECKSUM &
+#download_and_check $MPC_PACKAGE       $MPC_DOWNLOAD        $MPC_CHECKSUM &
+#download_and_check $GCC_PACKAGE       $GCC_DOWNLOAD        $GCC_CHECKSUM &
+#download_and_check $GDB_PACKAGE       $GDB_DOWNLOAD        $GDB_CHECKSUM &
+#download_and_check $AVRLIBC_PACKAGE   $AVRLIBC_DOWNLOAD    $AVRLIBC_CHECKSUM &
+#download_and_check $UISP_PACKAGE      $UISP_DOWNLOAD       $UISP_CHECKSUM &
 [ -z "$AVRDUDE_CVS" ] && download_and_check $AVRDUDE_PACKAGE   $AVRDUDE_DOWNLOAD    $AVRDUDE_CHECKSUM &
-download_and_check $AVARICE_PACKAGE      $AVARICE_DOWNLOAD       $AVARICE_CHECKSUM &
+#download_and_check $AVARICE_PACKAGE      $AVARICE_DOWNLOAD       $AVARICE_CHECKSUM &
 
 # wait until the subshells are finished
 wait
@@ -220,112 +220,112 @@ read
 
 # binutils
 ################################################################################
-echo "Building Binutils..."
-cd $COMPILE_DIR
-tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz
-cd ${BINUTILS}
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX --target=avr --disable-nls --enable-install-libbfd --disable-werror
-make
-make check
-make install
-cd $COMPILE_DIR
-rm -rf ${BINUTILS}
+#echo "Building Binutils..."
+#cd $COMPILE_DIR
+#tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz
+#cd ${BINUTILS}
+#mkdir obj-avr
+#cd obj-avr
+#../configure --prefix=$PREFIX --target=avr --disable-nls --enable-install-libbfd --disable-werror
+#make
+#make check
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${BINUTILS}
 
 
 # gmp
 ###############################################################################
-echo "Building GMP ..."
-cd $COMPILE_DIR
-tar xvfj ${ARCHIVES}/${GMP}.tar.bz2
-cd ${GMP}
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX --enable-cxx
-make -j8
-make check
-make install
-cd $COMPILE_DIR
-rm -rf ${GMP}
+#echo "Building GMP ..."
+#cd $COMPILE_DIR
+#tar xvfj ${ARCHIVES}/${GMP}.tar.bz2
+#cd ${GMP}
+#mkdir obj-avr
+#cd obj-avr
+#../configure --prefix=$PREFIX --enable-cxx
+#make -j8
+#make check
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${GMP}
 
 
 # mpfr
 ################################################################################
-echo "Building MPFR ..."
-cd $COMPILE_DIR
-#tar xvfj ${ARCHIVES}/${MPFR}.tar.bz2
-cd ${MPFR}
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX --with-gmp=$PREFIX --disable-dependency-tracking
-make -j8
-make check
-make install
-cd $COMPILE_DIR
-rm -rf ${MPFR}
+#echo "Building MPFR ..."
+#cd $COMPILE_DIR
+##tar xvfj ${ARCHIVES}/${MPFR}.tar.bz2
+#cd ${MPFR}
+#mkdir obj-avr
+#cd obj-avr
+#../configure --prefix=$PREFIX --with-gmp=$PREFIX --disable-dependency-tracking
+#make -j8
+#make check
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${MPFR}
 
 
 # mpc
 ################################################################################
-echo "Building MPC ..."
-cd $COMPILE_DIR
-tar xvfj ${ARCHIVES}/${MPC}.tar.gz
-cd ${MPC}
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX --with-gmp=$PREFIX --with-mpfr=$PREFIX
-make -j8
-make check
-make install
-cd $COMPILE_DIR
-rm -rf ${MPC}
+#echo "Building MPC ..."
+#cd $COMPILE_DIR
+#tar xvfj ${ARCHIVES}/${MPC}.tar.gz
+#cd ${MPC}
+#mkdir obj-avr
+#cd obj-avr
+#../configure --prefix=$PREFIX --with-gmp=$PREFIX --with-mpfr=$PREFIX
+#make -j8
+#make check
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${MPC}
 
 
  gcc
 ################################################################################
-echo "Building GCC ..."
-cd $COMPILE_DIR
-tar xvfj ${ARCHIVES}/${GCC}.tar.bz2
-cd ${GCC}
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX --target=avr --enable-languages=c,c++ --disable-libssp --disable-nls --with-dwarf2 --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX
-make -j8
-make install
-cd $COMPILE_DIR
-rm -rf ${GCC}
+#echo "Building GCC ..."
+#cd $COMPILE_DIR
+#tar xvfj ${ARCHIVES}/${GCC}.tar.bz2
+#cd ${GCC}
+#mkdir obj-avr
+#cd obj-avr
+#../configure --prefix=$PREFIX --target=avr --enable-languages=c,c++ --disable-libssp --disable-nls --with-dwarf2 --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX
+#make -j8
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${GCC}
 
 
 # avr-libc
 ################################################################################
-echo "Building AVR-Libc ..."
-cd $COMPILE_DIR
-tar xvfj ${ARCHIVES}/${AVRLIBC}.tar.bz2
-cd ${AVRLIBC}
-mkdir obj-avr
-cd obj-avr
-PATH=$PATH:$PREFIX/bin
-../configure --prefix=$PREFIX --build=`./config.guess` --host=avr
-make -j8
-make install
-cd $COMPILE_DIR
-rm -rf ${AVRLIBC}
+#echo "Building AVR-Libc ..."
+#cd $COMPILE_DIR
+#tar xvfj ${ARCHIVES}/${AVRLIBC}.tar.bz2
+#cd ${AVRLIBC}
+#mkdir obj-avr
+#cd obj-avr
+#PATH=$PATH:$PREFIX/bin
+#../configure --prefix=$PREFIX --build=`./config.guess` --host=avr
+#make -j8
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${AVRLIBC}
 
 
 # gdb
 ################################################################################
-echo "Building GDB ..."
-cd $COMPILE_DIR
-tar xvfj ${ARCHIVES}/${GDB}.tar.bz2
-cd ${GDB}
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX --target=avr
-make -j8
-make install
-cd $COMPILE_DIR
-rm -rf ${GDB}
+#echo "Building GDB ..."
+#cd $COMPILE_DIR
+#tar xvfj ${ARCHIVES}/${GDB}.tar.bz2
+#cd ${GDB}
+#mkdir obj-avr
+#cd obj-avr
+#../configure --prefix=$PREFIX --target=avr
+#make -j8
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${GDB}
 
 
 ## uisp
@@ -376,17 +376,17 @@ fi
 
 # avarice
 ################################################################################
-echo "Building Avarice ..."
-cd $COMPILE_DIR
-tar xvfj ${ARCHIVES}/${AVARICE}.tar.bz2
-cd ${AVARICE}
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX
-make -j8
-make install
-cd $COMPILE_DIR
-rm -rf ${AVARICE}
+#echo "Building Avarice ..."
+#cd $COMPILE_DIR
+#tar xvfj ${ARCHIVES}/${AVARICE}.tar.bz2
+#cd ${AVARICE}
+#mkdir obj-avr
+#cd obj-avr
+#../configure --prefix=$PREFIX
+#make -j8
+#make install
+#cd $COMPILE_DIR
+#rm -rf ${AVARICE}
 
 
 ################################################################################

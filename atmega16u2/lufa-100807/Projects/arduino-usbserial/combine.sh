@@ -1,3 +1,6 @@
 #!/bin/sh
 
-(sed '$d' Pinoccio-usbserial-4.7.2.hex; cat Pinoccio-usbdfu-4.7.2.hex) > Pinoccio-Combined-4.7.2.hex
+(sed '$d' Arduino-usbserial.hex; cat Arduino-usbdfu.hex) > pinoccio-16U2-combined.hex
+
+echo "Install combined hex with the following avrdude command:"
+echo "avrdude -p m16u2 -P usb -c avrisp2 -U flash:w:pinoccio-16U2-combined.hex:m -U lfuse:w:0xFF:m -U hfuse:w:0xD9:m -U efuse:w:0xF4:m"

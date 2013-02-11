@@ -66,7 +66,6 @@ const USB_Descriptor_Device_t PROGMEM DeviceDescriptor =
 	.Endpoint0Size          = FIXED_CONTROL_ENDPOINT_SIZE,
 		
 	.VendorID               = 0x1d50, // Pinoccio
-
 	.ProductID          	  = 0x6051, // Pinoccio USB-to-serial programmer
 	.ReleaseNumber          = 0x0001,
 		

@@ -48,16 +48,15 @@
 
 
 # MCU name
-MCU = atmega8u2
-MCU_AVRDUDE = at90usb82
+MCU = atmega16u2
+#MCU_AVRDUDE = at90usb162
+MCU_AVRDUDE = m16u2
 
 # Specify the Arduino model using the assigned PID.  This is used by Descriptors.c
 #   to set the product descriptor string (for DFU we must use the PID for each
 #   chip that dfu-bootloader or Flip expect)
-# Uno PID:
+# Pinoccio PID:
 ARDUINO_MODEL_PID = 0x6051
-# Mega 2560 PID:
-#ARDUINO_MODEL_PID = 0x0010
 
 # Target board (see library "Board Types" documentation, NONE for projects not requiring
 # LUFA board drivers). If USER is selected, put custom board drivers in a directory called

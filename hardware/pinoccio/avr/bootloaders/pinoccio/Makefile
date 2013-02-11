@@ -71,7 +71,7 @@ all: pinoccio
 
 pinoccio: TARGET = atmega128rfa1
 pinoccio: MCU_TARGET = atmega128rfa1
-pinoccio: CFLAGS += '-DMAX_TIME_COUNT=F_CPU>>4' '-DNUM_LED_FLASHES=5' -DBAUD_RATE=57600
+pinoccio: CFLAGS += '-DMAX_TIME_COUNT=F_CPU>>4' '-DNUM_LED_FLASHES=2' -DBAUD_RATE=57600
 pinoccio: AVR_FREQ = 16000000L
 pinoccio: LDSECTION  = --section-start=.text=0x1f000
 pinoccio: $(PROGRAM)_atmega128rfa1.hex

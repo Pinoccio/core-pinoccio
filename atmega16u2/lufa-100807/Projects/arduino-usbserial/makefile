@@ -62,9 +62,12 @@
 # 	Since the ATMEGA8U2 part is not directly supported by the current
 #	versions of either avrdude or dfu-programmer, we specify a dummy
 #	part; AT90USB82 which is close enough in memory size and organization
-MCU = atmega8u2
-MCU_AVRDUDE = at90usb82
-MCU_DFU = at90usb82
+MCU = atmega16u2
+MCU_AVRDUDE = at90usb162
+MCU_DFU = atmega16u2
+#MCU = atmega16u2
+#MCU_AVRDUDE = usb162
+#MCU_DFU = at90usb162
 
 # Specify the Arduino model using the assigned PID.  This is used by Descriptors.c
 #   to set PID and product descriptor string
@@ -371,6 +374,12 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 #
 AVRDUDE_PROGRAMMER = avrispmkii
 
+# Fuse settings for Arduino Uno DFU bootloader project
+AVRDUDE_FUSES = -U efuse:w:0xF4:m -U hfuse:w:0xD9:m -U lfuse:w:0xFF:m
+
+# Lock settings for Arduino Uno DFU bootloader project
+AVRDUDE_LOCK = -U lock:w:0x0F:m
+
 # com1 = serial port. Use lpt1 to connect to parallel port.
 AVRDUDE_PORT = usb
 
@@ -573,7 +582,7 @@ gccversion :
 
 # Program the device.
 program: $(TARGET).hex $(TARGET).eep
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
+	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM) $(AVRDUDE_FUSES) $(AVRDUDE_LOCK)
 
 flip: $(TARGET).hex
 	batchisp -hardware usb -device $(MCU_DFU) -operation erase f
@@ -582,7 +591,7 @@ flip: $(TARGET).hex
 
 dfu: $(TARGET).hex
 	dfu-programmer $(MCU_DFU) erase
-	dfu-programmer $(MCU_DFU) flash --debug 1 --supress-bootloader-mem $(TARGET).hex
+	dfu-programmer $(MCU_DFU) flash --debug 1 $(TARGET).hex
 	dfu-programmer $(MCU_DFU) reset
 
 
