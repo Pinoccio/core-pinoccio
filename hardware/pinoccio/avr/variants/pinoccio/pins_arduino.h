@@ -139,6 +139,14 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PB  , // PB 4 ** D20 ** LED_BLUE~
   PB  , // PB 5 ** D21 ** LED_RED~
   PB  , // PB 6 ** D22 ** LED_GREEN~
+  PF  , // PF 0 ** D23 ** A0
+  PF  , // PF 1 ** D24 ** A1
+  PF  , // PF 2 ** D25 ** A2
+  PF  , // PF 3 ** D26 ** A3
+  PF  , // PF 4 ** D27 ** A4
+  PF  , // PF 5 ** D28 ** A5
+  PF  , // PF 6 ** D29 ** A6
+  PF  , // PF 7 ** D30 ** A7
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
@@ -168,6 +176,14 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(PB4)  , // PB 4 ** D20 ** LED_BLUE*~
   _BV(PB5)  , // PB 5 ** D21 ** LED_RED*~
   _BV(PB6)  , // PB 6 ** D22 ** LED_GREEN*~
+  _BV(PF0)  , // PF 0 ** D23 ** A0
+  _BV(PF1)  , // PF 1 ** D24 ** A1
+  _BV(PF2)  , // PF 2 ** D25 ** A2
+  _BV(PF3)  , // PF 3 ** D26 ** A3
+  _BV(PF4)  , // PF 4 ** D27 ** A4
+  _BV(PF5)  , // PF 5 ** D28 ** A5
+  _BV(PF6)  , // PF 6 ** D29 ** A6
+  _BV(PF7)  , // PF 7 ** D30 ** A7
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
@@ -197,6 +213,14 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   TIMER2A       , // PB 4 ** D20 ** LED_BLUE~
   TIMER1A       , // PB 5 ** D21 ** LED_RED~
   TIMER1B       , // PB 6 ** D22 ** LED_GREEN~
+  NOT_ON_TIMER  , // PF 0 ** D23 ** A0
+  NOT_ON_TIMER  , // PF 1 ** D24 ** A1
+  NOT_ON_TIMER  , // PF 2 ** D25 ** A2
+  NOT_ON_TIMER  , // PF 3 ** D26 ** A3
+  NOT_ON_TIMER  , // PF 4 ** D27 ** A4
+  NOT_ON_TIMER  , // PF 5 ** D28 ** A5
+  NOT_ON_TIMER  , // PF 6 ** D29 ** A6
+  NOT_ON_TIMER  , // PF 7 ** D30 ** A7
 };
 
 #endif
