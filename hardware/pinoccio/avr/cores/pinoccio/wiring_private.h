@@ -52,7 +52,8 @@ extern "C"{
 #define EXTERNAL_INT_6 6
 #define EXTERNAL_INT_7 7
 
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || \
+    defined(__AVR_ATmega128RFA1__) || defined(__AVR_ATmega256RFR2__)
 #define EXTERNAL_NUM_INTERRUPTS 8
 #else
 #define EXTERNAL_NUM_INTERRUPTS 2
