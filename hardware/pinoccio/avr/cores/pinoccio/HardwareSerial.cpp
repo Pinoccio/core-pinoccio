@@ -167,7 +167,9 @@ void serialEventRun(void)
   if (Serial.available()) serialEvent();
 #endif
 #ifdef serialEvent1_implemented
+#ifdef USE_SERIAL1
   if (Serial1.available()) serialEvent1();
+#endif
 #endif
 }
 
@@ -429,7 +431,11 @@ HardwareSerial::operator bool() {
 #endif
 
 #if defined(UBRR1H)
+#ifdef USE_SERIAL1
   HardwareSerial Serial1(&rx_buffer1, &tx_buffer1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, &UCSR1C, &UDR1, RXEN1, TXEN1, RXCIE1, UDRIE1, U2X1);
+#else
+#warning "Due to issue #2, compiling with GCC < 4.7.1 doesn't support Serial1"
+#endif
 #endif
 
 #endif // whole file
