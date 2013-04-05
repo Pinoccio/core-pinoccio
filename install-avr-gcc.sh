@@ -255,29 +255,34 @@ download_and_check() {
   then
     echo "Archive ${ARCHIVES}/$1 not found, downloading..."
     wget --quiet -O ${ARCHIVES}/$1 $2
+    if [ $? -ne 0 ]; then
+      echo "Error: Failed to fetch ${1}" >&2
+      exit 1
+    fi
   fi
 
-  echo -n "Verifying md5 of ${ARCHIVES}/${1}... "
+  echo "Verifying md5 of ${ARCHIVES}/${1}... "
   MD5=`md5 -r ${ARCHIVES}/$1 | awk '{print $1}'`
   if [ "$MD5" != "$3" ]
   then
-    echo "Error: ${1} corrupted!"
-    echo "MD5 is: ${MD5}, but should be ${3}"
+    echo "Error: ${1} corrupted!" >&2
+    echo "MD5 is: ${MD5}, but should be ${3}" >&2
     exit 1
   fi
 }
 
 echo "Check / download source packages..."
-download_and_check $BINUTILS_PACKAGE  $BINUTILS_DOWNLOAD   $BINUTILS_CHECKSUM &
-download_and_check $GMP_PACKAGE       $GMP_DOWNLOAD        $GMP_CHECKSUM &
-download_and_check $MPFR_PACKAGE      $MPFR_DOWNLOAD       $MPFR_CHECKSUM &
-download_and_check $MPC_PACKAGE       $MPC_DOWNLOAD        $MPC_CHECKSUM &
-download_and_check $GCC_PACKAGE       $GCC_DOWNLOAD        $GCC_CHECKSUM &
-download_and_check $GDB_PACKAGE       $GDB_DOWNLOAD        $GDB_CHECKSUM &
-download_and_check $AVRLIBC_PACKAGE   $AVRLIBC_DOWNLOAD    $AVRLIBC_CHECKSUM &
-download_and_check $UISP_PACKAGE      $UISP_DOWNLOAD       $UISP_CHECKSUM &
-[ -z "$AVRDUDE_CVS" ] && download_and_check $AVRDUDE_PACKAGE   $AVRDUDE_DOWNLOAD    $AVRDUDE_CHECKSUM &
-download_and_check $AVARICE_PACKAGE      $AVARICE_DOWNLOAD       $AVARICE_CHECKSUM &
+[ -n "$BINUTILS_INSTALL" ] && download_and_check $BINUTILS_PACKAGE  $BINUTILS_DOWNLOAD   $BINUTILS_CHECKSUM &
+[ -n "$GMP_INSTALL" ] && download_and_check $GMP_PACKAGE       $GMP_DOWNLOAD        $GMP_CHECKSUM &
+[ -n "$MPFR_INSTALL" ] && download_and_check $MPFR_PACKAGE      $MPFR_DOWNLOAD       $MPFR_CHECKSUM &
+[ -n "$MPC_INSTALL" ] && download_and_check $MPC_PACKAGE       $MPC_DOWNLOAD        $MPC_CHECKSUM &
+[ -n "$GCC_INSTALL" ] && download_and_check $GCC_PACKAGE       $GCC_DOWNLOAD        $GCC_CHECKSUM &
+[ -n "$GDB_INSTALL" ] && download_and_check $GDB_PACKAGE       $GDB_DOWNLOAD        $GDB_CHECKSUM &
+[ -n "$AVRLIBC_INSTALL" ] && download_and_check $AVRLIBC_PACKAGE   $AVRLIBC_DOWNLOAD    $AVRLIBC_CHECKSUM &
+[ -n "$UISP_INSTALL" ] && download_and_check $UISP_PACKAGE      $UISP_DOWNLOAD       $UISP_CHECKSUM &
+[ -z "$AVRDUDE_CVS" ] &&
+  [ -n "$AVRDUDE_INSTALL" ] && download_and_check $AVRDUDE_PACKAGE $AVRDUDE_DOWNLOAD    $AVRDUDE_CHECKSUM &
+[ -n "$AVARICE_INSTALL" ] && download_and_check $AVARICE_PACKAGE   $AVARICE_DOWNLOAD    $AVARICE_CHECKSUM &
 
 # wait until the subshells are finished
 wait
