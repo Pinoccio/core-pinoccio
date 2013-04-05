@@ -16,8 +16,6 @@ PREFIX=/usr/local/avr
 # To install the toolchain directly into the OS X Pinoccio App
 #PREFIX=/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr
 
-export PATH=$PREFIX:$PATH
-
 # tools need each other and must therefore be in path
 export PATH="${PREFIX}/bin:${PATH}"
 export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
@@ -102,10 +100,10 @@ UISP_DOWNLOAD=${NONGNU_MIRROR}/uisp/${UISP_PACKAGE}
 UISP_CHECKSUM="b1e499d5a1011489635c1a0e482b1627"
 UISP_INSTALL=
 
-AVRDUDE=avrdude-5.10
+AVRDUDE=avrdude-5.11.1
 AVRDUDE_PACKAGE=${AVRDUDE}.tar.gz
 AVRDUDE_DOWNLOAD=${NONGNU_MIRROR}/avrdude/${AVRDUDE_PACKAGE}
-AVRDUDE_CHECKSUM="69b082683047e054348088fd63bad2ff"
+AVRDUDE_CHECKSUM="3a43e288cb32916703b6945e3f260df9"
 # uncomment if you want to build avrdude from cvs
 #AVRDUDE_CVS="cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/avrdude co avrdude"
 AVRDUDE_INSTALL=y
@@ -122,7 +120,6 @@ AVARICE_INSTALL=y
 ################################################################################
 ##
 
-OLDPWD=$PWD
 setCompilerVars
 
 echo "--------------------------------------"
@@ -560,5 +557,3 @@ echo "And for manpages, add the following line:"
 echo "    export MANPATH=\$MANPATH:$PREFIX/man"
 echo
 echo "--------------------------------------------------------------------------------"
-# return to users current directory
-cd $OLDPWD
