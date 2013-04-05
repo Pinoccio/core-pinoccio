@@ -66,10 +66,10 @@ GMP_DOWNLOAD=ftp://ftp.gmplib.org/pub/${GMP}/${GMP_PACKAGE}
 GMP_CHECKSUM="041487d25e9c230b0c42b106361055fe"
 GMP_INSTALL=y
 
-MPFR=mpfr-3.1.1
+MPFR=mpfr-3.1.2
 MPFR_PACKAGE=${MPFR}.tar.bz2
 MPFR_DOWNLOAD=http://www.mpfr.org/mpfr-current/${MPFR_PACKAGE}
-MPFR_CHECKSUM="e90e0075bb1b5f626c6e31aaa9c64e3b"
+MPFR_CHECKSUM="ee2c3ac63bf0c2359bf08fc3ee094c19"
 MPFR_INSTALL=y
 
 MPC=mpc-1.0.1
@@ -105,7 +105,7 @@ UISP_INSTALL=
 AVRDUDE=avrdude-5.10
 AVRDUDE_PACKAGE=${AVRDUDE}.tar.gz
 AVRDUDE_DOWNLOAD=${NONGNU_MIRROR}/avrdude/${AVRDUDE_PACKAGE}
-AVRDUDE_CHECKSUM="ba62697270b1292146dc56d462f5da14"
+AVRDUDE_CHECKSUM="69b082683047e054348088fd63bad2ff"
 # uncomment if you want to build avrdude from cvs
 #AVRDUDE_CVS="cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/avrdude co avrdude"
 AVRDUDE_INSTALL=y
@@ -113,7 +113,7 @@ AVRDUDE_INSTALL=y
 AVARICE=avarice-2.13
 AVARICE_PACKAGE=${AVARICE}.tar.bz2
 AVARICE_DOWNLOAD=http://downloads.sourceforge.net/project/avarice/avarice/${AVARICE}/${AVARICE_PACKAGE}
-AVARICE_CHECKSUM="ba62697270b1292146dc56d462f5da14"
+AVARICE_CHECKSUM="b9ea1202cfe78b6b008192f092b2dd6c"
 AVARICE_INSTALL=y
 
 ##
@@ -230,7 +230,7 @@ then
   echo "Unable to create target $PREFIX, please check permissions"
   exit 1
 fi
-rmdir $PREFIX
+#rmdir $PREFIX
 
 # Check if there's already a avr-gcc
 TOOL=`which avr-gcc 2>/dev/null`
@@ -271,6 +271,7 @@ download_and_check() {
   fi
 }
 
+echo
 echo "Check / download source packages..."
 [ -n "$BINUTILS_INSTALL" ] && download_and_check $BINUTILS_PACKAGE  $BINUTILS_DOWNLOAD   $BINUTILS_CHECKSUM &
 [ -n "$GMP_INSTALL" ] && download_and_check $GMP_PACKAGE       $GMP_DOWNLOAD        $GMP_CHECKSUM &
@@ -367,7 +368,7 @@ fi
 if [ -n "$MPC_INSTALL" ]; then
   echo "Building MPC ..."
   cd $COMPILE_DIR &&
-  tar xvfj $ARCHIVES/$MPC.tar.gz &&
+  tar xvfz $ARCHIVES/$MPC.tar.gz &&
   cd ${MPC} &&
   mkdir obj-avr &&
   cd obj-avr &&
