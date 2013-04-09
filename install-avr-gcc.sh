@@ -16,8 +16,6 @@ PREFIX=/usr/local/avr
 # To install the toolchain directly into the OS X Pinoccio App
 #PREFIX=/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr
 
-export PATH=$PREFIX:$PATH
-
 # tools need each other and must therefore be in path
 export PATH="${PREFIX}/bin:${PATH}"
 export LD_LIBRARY_PATH="${PREFIX}/lib:${LD_LIBRARY_PATH}"
@@ -58,53 +56,63 @@ BINUTILS=binutils-2.23
 BINUTILS_PACKAGE=${BINUTILS}.tar.gz
 BINUTILS_DOWNLOAD=${GNU_MIRROR}/binutils/${BINUTILS_PACKAGE}
 BINUTILS_CHECKSUM="ed58f50d8920c3f1d9cb110d5c972c27"
+BINUTILS_INSTALL=y
 
 GMP=gmp-5.0.5
 GMP_PACKAGE=${GMP}.tar.bz2
 GMP_DOWNLOAD=ftp://ftp.gmplib.org/pub/${GMP}/${GMP_PACKAGE}
 GMP_CHECKSUM="041487d25e9c230b0c42b106361055fe"
+GMP_INSTALL=y
 
-MPFR=mpfr-3.1.1
+MPFR=mpfr-3.1.2
 MPFR_PACKAGE=${MPFR}.tar.bz2
 MPFR_DOWNLOAD=http://www.mpfr.org/mpfr-current/${MPFR_PACKAGE}
-MPFR_CHECKSUM="e90e0075bb1b5f626c6e31aaa9c64e3b"
+MPFR_CHECKSUM="ee2c3ac63bf0c2359bf08fc3ee094c19"
+MPFR_INSTALL=y
 
 MPC=mpc-1.0.1
 MPC_PACKAGE=${MPC}.tar.gz
 MPC_DOWNLOAD=http://www.multiprecision.org/mpc/download/${MPC_PACKAGE}
 MPC_CHECKSUM="b32a2e1a3daa392372fbd586d1ed3679"
+MPC_INSTALL=y
 
 GCC=gcc-4.7.2
 GCC_PACKAGE=${GCC}.tar.bz2
 GCC_DOWNLOAD=${GNU_MIRROR}/gcc/${GCC}/${GCC_PACKAGE}
 GCC_CHECKSUM="cc308a0891e778cfda7a151ab8a6e762"
+GCC_INSTALL=y
 
 GDB=gdb-7.5
 GDB_PACKAGE=${GDB}.tar.bz2
 GDB_DOWNLOAD=${GNU_MIRROR}/gdb/${GDB_PACKAGE}
 GDB_CHECKSUM="24a6779a9fe0260667710de1b082ef61"
+GDB_INSTALL=y
 
 AVRLIBC=avr-libc-1.8.0
 AVRLIBC_PACKAGE=${AVRLIBC}.tar.bz2
 AVRLIBC_DOWNLOAD=${NONGNU_MIRROR}/avr-libc/${AVRLIBC_PACKAGE}
 AVRLIBC_CHECKSUM="54c71798f24c96bab206be098062344f"
+AVRLIBC_INSTALL=y
 
 UISP=uisp-20050207
 UISP_PACKAGE=${UISP}.tar.gz
 UISP_DOWNLOAD=${NONGNU_MIRROR}/uisp/${UISP_PACKAGE}
 UISP_CHECKSUM="b1e499d5a1011489635c1a0e482b1627"
+UISP_INSTALL=
 
-AVRDUDE=avrdude-5.10
+AVRDUDE=avrdude-5.11.1
 AVRDUDE_PACKAGE=${AVRDUDE}.tar.gz
 AVRDUDE_DOWNLOAD=${NONGNU_MIRROR}/avrdude/${AVRDUDE_PACKAGE}
-AVRDUDE_CHECKSUM="ba62697270b1292146dc56d462f5da14"
+AVRDUDE_CHECKSUM="3a43e288cb32916703b6945e3f260df9"
 # uncomment if you want to build avrdude from cvs
 #AVRDUDE_CVS="cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/avrdude co avrdude"
+AVRDUDE_INSTALL=y
 
 AVARICE=avarice-2.13
 AVARICE_PACKAGE=${AVARICE}.tar.bz2
 AVARICE_DOWNLOAD=http://downloads.sourceforge.net/project/avarice/avarice/${AVARICE}/${AVARICE_PACKAGE}
-AVARICE_CHECKSUM="ba62697270b1292146dc56d462f5da14"
+AVARICE_CHECKSUM="b9ea1202cfe78b6b008192f092b2dd6c"
+AVARICE_INSTALL=y
 
 ##
 ################################################################################
@@ -112,7 +120,6 @@ AVARICE_CHECKSUM="ba62697270b1292146dc56d462f5da14"
 ################################################################################
 ##
 
-OLDPWD=$PWD
 setCompilerVars
 
 echo "--------------------------------------"
@@ -132,6 +139,58 @@ echo "             in-system programmers"
 echo "  avrdude  - software for programming Atmel AVR Microcontrollers"
 echo "  avarice  - software to connect GDB to Atmel ICE JTAG interfaces"
 echo
+
+USAGE="Usage: $0 [-h] [-p prefix] [tool...]"
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -p|--prefix)
+      PREFIX="$2"
+      shift
+      ;;
+    -h|--help|-*)
+      echo "$USAGE" >&2
+      exit 1
+    ;;
+    *)
+      break
+    ;;
+  esac
+  shift
+done
+
+if [ $# -gt 0 ]; then
+  BINUTILS_INSTALL=
+  GMP_INSTALL=
+  MPFR_INSTALL=
+  MPC_INSTALL=
+  GCC_INSTALL=
+  GDB_INSTALL=
+  AVRLIBC_INSTALL=
+  UISP_INSTALL=
+  AVRDUDE_INSTALL=
+  AVARICE_INSTALL=
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      binutils)	BINUTILS_INSTALL=y ;;
+      gmp)  	GMP_INSTALL=y ;;
+      mpfr)  	MPFR_INSTALL=y ;;
+      mpc)  	MPC_INSTALL=y ;;
+      gcc)  	GCC_INSTALL=y ;;
+      gdb)  	GDB_INSTALL=y ;;
+      avr-libc)	AVRLIBC_INSTALL=y ;;
+      uisp)  	UISP_INSTALL=y ;;
+      avrdude)	AVRDUDE_INSTALL=y ;;
+      avarice)	AVARICE_INSTALL=y ;;
+      *)
+        echo "$USAGE" >&2
+        exit 1
+      ;;
+    esac
+    shift
+  done
+fi
+
 echo "Installation into target directory:"
 echo "${PREFIX}"
 echo
@@ -168,7 +227,7 @@ then
   echo "Unable to create target $PREFIX, please check permissions"
   exit 1
 fi
-rmdir $PREFIX
+#rmdir $PREFIX
 
 # Check if there's already a avr-gcc
 TOOL=`which avr-gcc 2>/dev/null`
@@ -193,29 +252,35 @@ download_and_check() {
   then
     echo "Archive ${ARCHIVES}/$1 not found, downloading..."
     wget --quiet -O ${ARCHIVES}/$1 $2
+    if [ $? -ne 0 ]; then
+      echo "Error: Failed to fetch ${1}" >&2
+      exit 1
+    fi
   fi
 
-  echo -n "Verifying md5 of ${ARCHIVES}/${1}... "
+  echo "Verifying md5 of ${ARCHIVES}/${1}... "
   MD5=`md5 -r ${ARCHIVES}/$1 | awk '{print $1}'`
   if [ "$MD5" != "$3" ]
   then
-    echo "Error: ${1} corrupted!"
-    echo "MD5 is: ${MD5}, but should be ${3}"
+    echo "Error: ${1} corrupted!" >&2
+    echo "MD5 is: ${MD5}, but should be ${3}" >&2
     exit 1
   fi
 }
 
+echo
 echo "Check / download source packages..."
-download_and_check $BINUTILS_PACKAGE  $BINUTILS_DOWNLOAD   $BINUTILS_CHECKSUM &
-download_and_check $GMP_PACKAGE       $GMP_DOWNLOAD        $GMP_CHECKSUM &
-download_and_check $MPFR_PACKAGE      $MPFR_DOWNLOAD       $MPFR_CHECKSUM &
-download_and_check $MPC_PACKAGE       $MPC_DOWNLOAD        $MPC_CHECKSUM &
-download_and_check $GCC_PACKAGE       $GCC_DOWNLOAD        $GCC_CHECKSUM &
-download_and_check $GDB_PACKAGE       $GDB_DOWNLOAD        $GDB_CHECKSUM &
-download_and_check $AVRLIBC_PACKAGE   $AVRLIBC_DOWNLOAD    $AVRLIBC_CHECKSUM &
-download_and_check $UISP_PACKAGE      $UISP_DOWNLOAD       $UISP_CHECKSUM &
-[ -z "$AVRDUDE_CVS" ] && download_and_check $AVRDUDE_PACKAGE   $AVRDUDE_DOWNLOAD    $AVRDUDE_CHECKSUM &
-download_and_check $AVARICE_PACKAGE      $AVARICE_DOWNLOAD       $AVARICE_CHECKSUM &
+[ -n "$BINUTILS_INSTALL" ] && download_and_check $BINUTILS_PACKAGE  $BINUTILS_DOWNLOAD   $BINUTILS_CHECKSUM &
+[ -n "$GMP_INSTALL" ] && download_and_check $GMP_PACKAGE       $GMP_DOWNLOAD        $GMP_CHECKSUM &
+[ -n "$MPFR_INSTALL" ] && download_and_check $MPFR_PACKAGE      $MPFR_DOWNLOAD       $MPFR_CHECKSUM &
+[ -n "$MPC_INSTALL" ] && download_and_check $MPC_PACKAGE       $MPC_DOWNLOAD        $MPC_CHECKSUM &
+[ -n "$GCC_INSTALL" ] && download_and_check $GCC_PACKAGE       $GCC_DOWNLOAD        $GCC_CHECKSUM &
+[ -n "$GDB_INSTALL" ] && download_and_check $GDB_PACKAGE       $GDB_DOWNLOAD        $GDB_CHECKSUM &
+[ -n "$AVRLIBC_INSTALL" ] && download_and_check $AVRLIBC_PACKAGE   $AVRLIBC_DOWNLOAD    $AVRLIBC_CHECKSUM &
+[ -n "$UISP_INSTALL" ] && download_and_check $UISP_PACKAGE      $UISP_DOWNLOAD       $UISP_CHECKSUM &
+[ -z "$AVRDUDE_CVS" ] &&
+  [ -n "$AVRDUDE_INSTALL" ] && download_and_check $AVRDUDE_PACKAGE $AVRDUDE_DOWNLOAD    $AVRDUDE_CHECKSUM &
+[ -n "$AVARICE_INSTALL" ] && download_and_check $AVARICE_PACKAGE   $AVARICE_DOWNLOAD    $AVARICE_CHECKSUM &
 
 # wait until the subshells are finished
 wait
@@ -232,155 +297,222 @@ echo "Press return to continue, CTRL-C to abort ..."
 read
 
 
+mkdir $COMPILE_DIR
+
+
 # binutils
 ################################################################################
-echo "Building Binutils..."
-cd $COMPILE_DIR
-tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz
-cd $BINUTILS
-mkdir obj-avr
-cd obj-avr
-../configure --prefix=$PREFIX --target=avr --disable-nls --enable-install-libbfd --disable-werror
-make
-make check
-make install
+if [ -n "$BINUTILS_INSTALL" ]; then
+  echo "Building Binutils..."
+  cd $COMPILE_DIR &&
+  tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz &&
+  cd $BINUTILS &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --prefix=$PREFIX --target=avr --disable-nls --enable-install-libbfd --disable-werror &&
+  make &&
+  make check &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building Binutils..." >&2
+    exit 1
+  fi
+fi
 
 
 # gmp
 ###############################################################################
-echo "Building GMP ..."
-cd ${COMPILE_DIR}
-tar xvfj ${ARCHIVES}/${GMP}.tar.bz2
-cd ${GMP}
-mkdir obj-avr
-cd obj-avr
-../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$GMP --enable-cxx
-make -j8
-make check
-make install
+if [ -n "$GMP_INSTALL" ]; then
+  echo "Building GMP ..."
+  cd ${COMPILE_DIR} &&
+  tar xvfj ${ARCHIVES}/${GMP}.tar.bz2 &&
+  cd ${GMP} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$GMP --enable-cxx &&
+  make -j8 &&
+  make check &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building GMP..." >&2
+    exit 1
+  fi
+fi
 
 
 # mpfr
 ################################################################################
-echo "Building MPFR ..."
-cd ${COMPILE_DIR}
-tar xvfj ${ARCHIVES}/${MPFR}.tar.bz2
-cd ${MPFR}
-mkdir obj-avr
-cd obj-avr
-../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$MPFR --with-gmp=$COMPILE_DIR/$GMP --disable-dependency-tracking
-make -j8
-make check
-make install
+if [ -n "$MPFR_INSTALL" ]; then
+  echo "Building MPFR ..."
+  cd ${COMPILE_DIR} &&
+  tar xvfj ${ARCHIVES}/${MPFR}.tar.bz2 &&
+  cd ${MPFR} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$MPFR --with-gmp=$COMPILE_DIR/$GMP --disable-dependency-tracking &&
+  make -j8 &&
+  make check &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building MPFR..." >&2
+    exit 1
+  fi
+fi
 
 
 # mpc
 ################################################################################
-echo "Building MPC ..."
-cd $COMPILE_DIR
-tar xvfj $ARCHIVES/$MPC.tar.gz
-cd ${MPC}
-mkdir obj-avr
-cd obj-avr
-../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$MPC --with-gmp=$COMPILE_DIR/$GMP --with-mpfr=$COMPILE_DIR/$MPFR
-make -j8
-make check
-make install
+if [ -n "$MPC_INSTALL" ]; then
+  echo "Building MPC ..."
+  cd $COMPILE_DIR &&
+  tar xvfz $ARCHIVES/$MPC.tar.gz &&
+  cd ${MPC} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$MPC --with-gmp=$COMPILE_DIR/$GMP --with-mpfr=$COMPILE_DIR/$MPFR &&
+  make -j8 &&
+  make check &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building MPC..." >&2
+    exit 1
+  fi
+fi
 
 
 # gcc
 ################################################################################
-echo "Building GCC ..."
-cd $COMPILE_DIR
-tar xvfj $ARCHIVES/$GCC.tar.bz2
-cd ${GCC}
-mkdir obj-avr
-cd obj-avr
-../configure --disable-shared --enable-static --prefix=$PREFIX --target=avr --enable-languages=c,c++ --disable-libssp --disable-nls --with-dwarf2 --with-gmp=$COMPILE_DIR/$GMP --with-mpfr=$COMPILE_DIR/$MPFR --with-mpc=$COMPILE_DIR/$MPC
-make -j8
-make install
+if [ -n "$GCC_INSTALL" ]; then
+  echo "Building GCC ..."
+  cd $COMPILE_DIR &&
+  tar xvfj $ARCHIVES/$GCC.tar.bz2 &&
+  cd ${GCC} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --disable-shared --enable-static --prefix=$PREFIX --target=avr --enable-languages=c,c++ --disable-libssp --disable-nls --with-dwarf2 --with-gmp=$COMPILE_DIR/$GMP --with-mpfr=$COMPILE_DIR/$MPFR --with-mpc=$COMPILE_DIR/$MPC &&
+  make -j8 &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building GCC..." >&2
+    exit 1
+  fi
+fi
 
 
 # avr-libc
 ################################################################################
-echo "Building AVR-Libc ..."
-unsetCompilerVars # make sure CC/CXX/CPP/LD env vars aren't set, or avr-libc won't build
-cd $COMPILE_DIR
-tar xvfj ${ARCHIVES}/${AVRLIBC}.tar.bz2
-cd ${AVRLIBC}
-mkdir obj-avr
-cd obj-avr
-PATH=$PATH:$PREFIX/bin
-../configure --prefix=$PREFIX --build=`../config.guess` --host=avr
-CC=avr-gcc make -j8 
-make install
-setCompilerVars
+if [ -n "$AVRLIBC_INSTALL" ]; then
+  echo "Building AVR-Libc ..."
+  unsetCompilerVars # make sure CC/CXX/CPP/LD env vars aren't set, or avr-libc won't build
+  cd $COMPILE_DIR &&
+  tar xvfj ${ARCHIVES}/${AVRLIBC}.tar.bz2 &&
+  cd ${AVRLIBC} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  PATH=$PATH:$PREFIX/bin &&
+  ../configure --prefix=$PREFIX --build=`../config.guess` --host=avr &&
+  CC=avr-gcc make -j8  &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building AVR-Libc..." >&2
+    exit 1
+  fi
+  setCompilerVars
+fi
 
 
 # gdb
 ################################################################################
-echo "Building GDB ..."
-cd ${COMPILE_DIR}
-tar xvfj ${ARCHIVES}/${GDB}.tar.bz2
-cd ${GDB}
-mkdir obj-avr
-cd obj-avr
-../configure --disable-shared --enable-static --prefix=${PREFIX} --target=avr
-make -j8
-make install
+if [ -n "$GDB_INSTALL" ]; then
+  echo "Building GDB ..."
+  cd ${COMPILE_DIR} &&
+  tar xvfj ${ARCHIVES}/${GDB}.tar.bz2 &&
+  cd ${GDB} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --disable-shared --enable-static --prefix=${PREFIX} --target=avr &&
+  make -j8 &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building GDB..." >&2
+    exit 1
+  fi
+fi
 
 
 ## uisp
 #################################################################################
-# echo "Building UISP ..."
-# cd ${COMPILE_DIR}
-# tar xvfz $ARCHIVES/$UISP.tar.gz
-# cd ${UISP}
-# mkdir obj-avr
-# cd obj-avr
-# ../configure --disable-shared --enable-static --prefix=$PREFIX --disable-werror
-# make -j8
-# make install
+if [ -n "$UISP_INSTALL" ]; then
+  echo "Building UISP ..."
+  cd ${COMPILE_DIR} &&
+  tar xvfz $ARCHIVES/$UISP.tar.gz &&
+  cd ${UISP} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --disable-shared --enable-static --prefix=$PREFIX --disable-werror &&
+  make -j8 &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building UISP..." >&2
+    exit 1
+  fi
+fi
 
 
 # avrdude
 ################################################################################
-echo "Building AVRDUDE..."
-if [ -z "${AVRDUDE_CVS}" ]
-then
-  cd ${COMPILE_DIR}
-  tar xvfz ${ARCHIVES}/${AVRDUDE}.tar.gz
-  cd ${AVRDUDE}
-  mkdir obj-avr
-  cd obj-avr
-  ../configure --disable-shared --enable-static --prefix=${PREFIX}
-  make -j8
-  make install
-else
-  # building avrdude from cvs
-  cd ${COMPILE_DIR}
-  `$AVRDUDE_CVS`
-  cd avrdude
-  ./bootstrap
-  mkdir obj-avr
-  cd obj-avr
-  ../configure --disable-shared --enable-static --prefix=${PREFIX}
-  make -j8
-  make install
-# fi
+if [ -n "$AVRDUDE_INSTALL" ]; then
+  echo "Building AVRDUDE..."
+  if [ -z "${AVRDUDE_CVS}" ]
+  then
+    cd ${COMPILE_DIR} &&
+    tar xvfz ${ARCHIVES}/${AVRDUDE}.tar.gz &&
+    cd ${AVRDUDE} &&
+    mkdir obj-avr &&
+    cd obj-avr &&
+    ../configure --disable-shared --enable-static --prefix=${PREFIX} &&
+    make -j8 &&
+    make install
+    if [ $? -gt 0 ]; then
+      echo "Error building AVRDUDE..." >&2
+      exit 1
+    fi
+  else
+    # building avrdude from cvs
+    cd ${COMPILE_DIR} &&
+    `$AVRDUDE_CVS` &&
+    cd avrdude &&
+    ./bootstrap &&
+    mkdir obj-avr &&
+    cd obj-avr &&
+    ../configure --disable-shared --enable-static --prefix=${PREFIX} &&
+    make -j8 &&
+    make install
+    if [ $? -gt 0 ]; then
+      echo "Error building AVRDUDE..." >&2
+      exit 1
+    fi
+  fi
+fi
 
 
 # avarice
 ################################################################################
-echo "Building Avarice ..."
-cd ${COMPILE_DIR}
-tar xvfj ${ARCHIVES}/${AVARICE}.tar.bz2
-cd ${AVARICE}
-mkdir obj-avr
-cd obj-avr
-../configure --disable-shared --enable-static --prefix=${PREFIX}
-make -j8
-make install
+if [ -n "$AVARICE_INSTALL" ]; then
+  echo "Building Avarice ..."
+  cd ${COMPILE_DIR} &&
+  tar xvfj ${ARCHIVES}/${AVARICE}.tar.bz2 &&
+  cd ${AVARICE} &&
+  mkdir obj-avr &&
+  cd obj-avr &&
+  ../configure --disable-shared --enable-static --prefix=${PREFIX} &&
+  make -j8 &&
+  make install
+  if [ $? -gt 0 ]; then
+    echo "Error building Avarice..." >&2
+    exit 1
+  fi
+fi
 
 
 # Cleanup
@@ -425,5 +557,3 @@ echo "And for manpages, add the following line:"
 echo "    export MANPATH=\$MANPATH:$PREFIX/man"
 echo
 echo "--------------------------------------------------------------------------------"
-# return to users current directory
-cd $OLDPWD

@@ -93,10 +93,23 @@ class HardwareSerial : public Stream
 #define SERIAL_7O2 0x3C
 #define SERIAL_8O2 0x3E
 
+/*
+ * Issue #2: Due to a bug in GCC before 4.7.1, sketches hang
+ * on launch when both serial ports are enabled on ATmega1280
+ * and ATmega128RFA1.
+ */
+#if __GNUC__ > 4 || \
+    (__GNUC__ == 4 && \
+     (__GNUC_MINOR__ > 7 || \
+      (__GNUC_MINOR__ == 7 && \
+       __GNUC_PATCHLEVEL__ >= 1)))
+#define USE_SERIAL1
+#endif
+
 #if defined(UBRRH) || defined(UBRR0H)
   extern HardwareSerial Serial;
 #endif
-#if defined(UBRR1H)
+#if defined(UBRR1H) && defined(USE_SERIAL1)
   extern HardwareSerial Serial1;
 #endif
 

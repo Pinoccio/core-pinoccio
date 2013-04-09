@@ -1,1 +1,15 @@
+*.eep
+*.elf
+*.o
+*.lss
+*.lst
+*.map
+*.sym
 .DS_Store
+/atmega16u2/lufa-100807/Bootloaders/arduino-usbdfu/.dep/
+/atmega16u2/lufa-100807/Bootloaders/arduino-usbdfu/Arduino-usbdfu.hex
+/atmega16u2/lufa-100807/Projects/arduino-usbserial/.dep/
+/atmega16u2/lufa-100807/Projects/arduino-usbserial/Arduino-usbdfu.hex
+/atmega16u2/lufa-100807/Projects/arduino-usbserial/Arduino-usbserial.hex
+/atmega16u2/lufa-100807/Projects/arduino-usbserial/Arduino-usbserial.s
+/atmega16u2/lufa-100807/Projects/arduino-usbserial/pinoccio-16U2-combined.hex
