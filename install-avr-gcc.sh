@@ -12,7 +12,8 @@
 #
 
 # select where to install the software
-PREFIX=/usr/local/avr
+SOURCEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PREFIX="$SOURCEDIR/build"
 # To install the toolchain directly into the OS X Pinoccio App
 #PREFIX=/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr
 
@@ -23,10 +24,10 @@ export DYLD_LIBRARY_PATH="${PREFIX}/lib:${DYLD_LIBRARY_PATH}"
 
 # gcc-4.2 tested on OS X.  XCode's clang compiler can cause problems
 function setCompilerVars {
-  export CC=/usr/bin/gcc-4.2
-  export CXX=/usr/bin/g++-4.2
-  export CPP=/usr/bin/cpp-4.2
-  export LD=/usr/bin/gcc-4.2
+  export CC=/usr/bin/gcc
+  export CXX=/usr/bin/g++
+  export CPP=/usr/bin/cpp
+  export LD=/usr/bin/gcc
 }
 
 function unsetCompilerVars {
@@ -37,10 +38,10 @@ function unsetCompilerVars {
 }
 
 # specify here where to find/install the source archives
-ARCHIVES=$HOME/src
+ARCHIVES="$SOURCEDIR/archives"
 
 # specify here where to compile (i.e. to avoid compiling over nfs)
-COMPILE_DIR=/tmp/$USER
+COMPILE_DIR="$SOURCEDIR/working"
 
 # tools required for build process
 REQUIRED="wget bison flex gcc g++"
@@ -98,7 +99,7 @@ UISP=uisp-20050207
 UISP_PACKAGE=${UISP}.tar.gz
 UISP_DOWNLOAD=${NONGNU_MIRROR}/uisp/${UISP_PACKAGE}
 UISP_CHECKSUM="b1e499d5a1011489635c1a0e482b1627"
-UISP_INSTALL=
+UISP_INSTALL=y
 
 AVRDUDE=avrdude-5.11.1
 AVRDUDE_PACKAGE=${AVRDUDE}.tar.gz
@@ -450,6 +451,7 @@ if [ -n "$UISP_INSTALL" ]; then
   mkdir obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=$PREFIX --disable-werror &&
+  sed -i'.bak' '/-Werror/d' src/Makefile &&
   make -j8 &&
   make install
   if [ $? -gt 0 ]; then

@@ -6,6 +6,9 @@
 *.map
 *.sym
 .DS_Store
+/working
+/archives
+/build
 /atmega16u2/lufa-100807/Bootloaders/arduino-usbdfu/.dep/
 /atmega16u2/lufa-100807/Bootloaders/arduino-usbdfu/Arduino-usbdfu.hex
 /atmega16u2/lufa-100807/Projects/arduino-usbserial/.dep/
