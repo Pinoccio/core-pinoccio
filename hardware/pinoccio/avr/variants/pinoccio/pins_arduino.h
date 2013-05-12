@@ -47,6 +47,7 @@ static const uint8_t LED_BLUE = 20;
 static const uint8_t LED_RED = 21;
 static const uint8_t LED_GREEN = 22;
 static const uint8_t LED_BUILTIN = 22;
+static const uint8_t LED = 22;
 
 static const uint8_t A0 = 23;
 static const uint8_t A1 = 24;

@@ -40,7 +40,7 @@
 		#include <LUFA/Drivers/USB/USB.h>
 		
 	/* Product-specific definitions: */
-		#define ARDUINO_UNO_PID				0x0001
+		#define ARDUINO_UNO_PID				  0x0001
 		#define ARDUINO_MEGA2560_PID		0x0010	
 		#define PINOCCIO_PID		        0x6051	
 

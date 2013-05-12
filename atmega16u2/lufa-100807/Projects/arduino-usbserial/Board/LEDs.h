@@ -54,7 +54,7 @@
 			#define LEDS_LED1        (1 << 5)
 
 			/** LED mask for the second LED on the board. */
-			#define LEDS_LED2        (1 << 4)
+			#define LEDS_LED2        (1 << 6)
 
 			/** LED mask for all the LEDs on the board. */
 			#define LEDS_ALL_LEDS    (LEDS_LED1 | LEDS_LED2)

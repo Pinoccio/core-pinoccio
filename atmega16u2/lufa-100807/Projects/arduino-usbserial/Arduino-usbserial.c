@@ -146,7 +146,11 @@ void SetupHardware(void)
 	Serial_Init(9600, false);
 	LEDs_Init();
 	USB_Init();
-
+	
+	/* Set PD4 to Hi-z/input to enable charge controller */
+  DDRD & ~(0x01 << 4);
+  PORTD & ~(0x01 << 4);
+  
 	/* Start the flush timer so that overflows occur rapidly to push received bytes to the USB interface */
 	TCCR0B = (1 << CS02);
 	

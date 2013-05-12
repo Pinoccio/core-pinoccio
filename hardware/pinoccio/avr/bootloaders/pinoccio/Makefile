@@ -79,9 +79,9 @@ pinoccio: $(PROGRAM)_atmega128rfa1.hex
 pinoccio_isp: pinoccio
 pinoccio_isp: TARGET = atmega128rfa1
 pinoccio_isp: MCU_TARGET = atmega128rfa1
-pinoccio_isp: HFUSE = DA
+pinoccio_isp: HFUSE = D2
 pinoccio_isp: LFUSE = F7
-pinoccio_isp: EFUSE = F5
+pinoccio_isp: EFUSE = FC
 pinoccio_isp: isp
 
 
