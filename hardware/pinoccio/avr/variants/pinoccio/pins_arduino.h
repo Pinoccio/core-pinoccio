@@ -29,8 +29,8 @@
 
 #define NUM_DIGITAL_PINS            23
 #define NUM_ANALOG_INPUTS           8
-#define analogInputToDigitalPin(p)  ((p < 8) ? (p) + 23 : -1)
-#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 4 || (p) == 5 || (p) == 6 || (p) == 20 || (p) == 21 || (p) == 22)
+#define analogInputToDigitalPin(p)  ((p < 8) ? (p) + 24 : -1)
+#define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5 || (p) == 21 || (p) == 22 || (p) == 23)
 
 static const uint8_t SS   = 9;
 static const uint8_t MOSI = 10;
@@ -41,22 +41,23 @@ static const uint8_t SCL = 15;
 static const uint8_t SDA = 16;
 
 static const uint8_t VCC_ENABLE = 17;
-static const uint8_t BATT_CHECK = 18;
-static const uint8_t CHG_STATUS = 19;
-static const uint8_t LED_BLUE = 20;
-static const uint8_t LED_RED = 21;
-static const uint8_t LED_GREEN = 22;
-static const uint8_t LED_BUILTIN = 22;
-static const uint8_t LED = 22;
+static const uint8_t BATT_ALERT = 18;
+static const uint8_t BACKPACK_BUS = 19;
+static const uint8_t CHG_STATUS = 20;
+static const uint8_t LED_BLUE = 21;
+static const uint8_t LED_RED = 22;
+static const uint8_t LED_GREEN = 23;
+static const uint8_t LED_BUILTIN = 23;
+static const uint8_t LED = 23;
 
-static const uint8_t A0 = 23;
-static const uint8_t A1 = 24;
-static const uint8_t A2 = 25;
-static const uint8_t A3 = 26;
-static const uint8_t A4 = 27;
-static const uint8_t A5 = 28;
-static const uint8_t A6 = 29;
-static const uint8_t A7 = 30;
+static const uint8_t A0 = 24;
+static const uint8_t A1 = 25;
+static const uint8_t A2 = 26;
+static const uint8_t A3 = 27;
+static const uint8_t A4 = 28;
+static const uint8_t A5 = 29;
+static const uint8_t A6 = 30;
+static const uint8_t A7 = 31;
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 24) ? (&PCICR) : ((uint8_t *)0))
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
@@ -134,20 +135,21 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PD  , // PD 3 ** D14 ** USART1_TX*
   PD  , // PD 0 ** D15 ** I2C_SCL*
   PD  , // PD 1 ** D16 ** I2C_SDA*
-  PD  , // PD 5 ** D17 ** VCC_ENABLE
-  PD  , // PD 6 ** D18 ** BATT_CHECK
-  PD  , // PD 7 ** D19 ** CHG_STATUS
-  PB  , // PB 4 ** D20 ** LED_BLUE~
-  PB  , // PB 5 ** D21 ** LED_RED~
-  PB  , // PB 6 ** D22 ** LED_GREEN~
-  PF  , // PF 0 ** D23 ** A0
-  PF  , // PF 1 ** D24 ** A1
-  PF  , // PF 2 ** D25 ** A2
-  PF  , // PF 3 ** D26 ** A3
-  PF  , // PF 4 ** D27 ** A4
-  PF  , // PF 5 ** D28 ** A5
-  PF  , // PF 6 ** D29 ** A6
-  PF  , // PF 7 ** D30 ** A7
+  PD  , // PD 4 ** D17 ** VCC_ENABLE
+  PD  , // PD 5 ** D18 ** BATT_ALERT
+  PD  , // PD 6 ** D19 ** BACKPACK_BUS
+  PD  , // PD 7 ** D20 ** CHG_STATUS
+  PB  , // PB 4 ** D21 ** LED_BLUE~
+  PB  , // PB 5 ** D22 ** LED_RED~
+  PB  , // PB 6 ** D23 ** LED_GREEN~
+  PF  , // PF 0 ** D24 ** A0
+  PF  , // PF 1 ** D25 ** A1
+  PF  , // PF 2 ** D26 ** A2
+  PF  , // PF 3 ** D27 ** A3
+  PF  , // PF 4 ** D28 ** A4
+  PF  , // PF 5 ** D29 ** A5
+  PF  , // PF 6 ** D30 ** A6
+  PF  , // PF 7 ** D31 ** A7
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
@@ -171,20 +173,21 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(PD3)  , // PD 3 ** D14 ** USART1_TX*
   _BV(PD0)  , // PD 0 ** D15 ** I2C_SCL*
   _BV(PD1)  , // PD 1 ** D16 ** I2C_SDA*
-  _BV(PD5)  , // PD 5 ** D17 ** VCC_ENABLE
-  _BV(PD6)  , // PD 6 ** D18 ** BATT_CHECK
-  _BV(PD7)  , // PD 7 ** D19 ** CHG_STATUS
-  _BV(PB4)  , // PB 4 ** D20 ** LED_BLUE*~
-  _BV(PB5)  , // PB 5 ** D21 ** LED_RED*~
-  _BV(PB6)  , // PB 6 ** D22 ** LED_GREEN*~
-  _BV(PF0)  , // PF 0 ** D23 ** A0
-  _BV(PF1)  , // PF 1 ** D24 ** A1
-  _BV(PF2)  , // PF 2 ** D25 ** A2
-  _BV(PF3)  , // PF 3 ** D26 ** A3
-  _BV(PF4)  , // PF 4 ** D27 ** A4
-  _BV(PF5)  , // PF 5 ** D28 ** A5
-  _BV(PF6)  , // PF 6 ** D29 ** A6
-  _BV(PF7)  , // PF 7 ** D30 ** A7
+  _BV(PD4)  , // PD 4 ** D17 ** VCC_ENABLE
+  _BV(PD5)  , // PD 5 ** D18 ** BATT_ALERT
+  _BV(PD6)  , // PD 6 ** D19 ** BACKPACK_BUS
+  _BV(PD7)  , // PD 7 ** D20 ** CHG_STATUS
+  _BV(PB4)  , // PB 4 ** D21 ** LED_BLUE*~
+  _BV(PB5)  , // PB 5 ** D22 ** LED_RED*~
+  _BV(PB6)  , // PB 6 ** D23 ** LED_GREEN*~
+  _BV(PF0)  , // PF 0 ** D24 ** A0
+  _BV(PF1)  , // PF 1 ** D25 ** A1
+  _BV(PF2)  , // PF 2 ** D26 ** A2
+  _BV(PF3)  , // PF 3 ** D27 ** A3
+  _BV(PF4)  , // PF 4 ** D28 ** A4
+  _BV(PF5)  , // PF 5 ** D29 ** A5
+  _BV(PF6)  , // PF 6 ** D30 ** A6
+  _BV(PF7)  , // PF 7 ** D31 ** A7
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
@@ -208,20 +211,21 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER  , // PD 3 ** D14 ** USART1_TX*
   NOT_ON_TIMER  , // PD 0 ** D15 ** I2C_SCL*
   NOT_ON_TIMER  , // PD 1 ** D16 ** I2C_SDA*
-  NOT_ON_TIMER  , // PD 5 ** D17 ** VCC_ENABLE
-  NOT_ON_TIMER  , // PD 6 ** D18 ** BATT_CHECK
-  NOT_ON_TIMER  , // PD 7 ** D19 ** CHG_STATUS
-  TIMER2A       , // PB 4 ** D20 ** LED_BLUE~
-  TIMER1A       , // PB 5 ** D21 ** LED_RED~
-  TIMER1B       , // PB 6 ** D22 ** LED_GREEN~
-  NOT_ON_TIMER  , // PF 0 ** D23 ** A0
-  NOT_ON_TIMER  , // PF 1 ** D24 ** A1
-  NOT_ON_TIMER  , // PF 2 ** D25 ** A2
-  NOT_ON_TIMER  , // PF 3 ** D26 ** A3
-  NOT_ON_TIMER  , // PF 4 ** D27 ** A4
-  NOT_ON_TIMER  , // PF 5 ** D28 ** A5
-  NOT_ON_TIMER  , // PF 6 ** D29 ** A6
-  NOT_ON_TIMER  , // PF 7 ** D30 ** A7
+  NOT_ON_TIMER  , // PD 4 ** D17 ** VCC_ENABLE
+  NOT_ON_TIMER  , // PD 5 ** D18 ** BATT_ALERT
+  NOT_ON_TIMER  , // PD 6 ** D19 ** BACKPACK_BUS
+  NOT_ON_TIMER  , // PD 7 ** D20 ** CHG_STATUS
+  TIMER2A       , // PB 4 ** D21 ** LED_BLUE~
+  TIMER1A       , // PB 5 ** D22 ** LED_RED~
+  TIMER1B       , // PB 6 ** D23 ** LED_GREEN~
+  NOT_ON_TIMER  , // PF 0 ** D24 ** A0
+  NOT_ON_TIMER  , // PF 1 ** D25 ** A1
+  NOT_ON_TIMER  , // PF 2 ** D26 ** A2
+  NOT_ON_TIMER  , // PF 3 ** D27 ** A3
+  NOT_ON_TIMER  , // PF 4 ** D28 ** A4
+  NOT_ON_TIMER  , // PF 5 ** D29 ** A5
+  NOT_ON_TIMER  , // PF 6 ** D30 ** A6
+  NOT_ON_TIMER  , // PF 7 ** D31 ** A7
 };
 
 #endif
