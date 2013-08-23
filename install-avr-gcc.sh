@@ -13,9 +13,9 @@
 
 # select where to install the software
 SOURCEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-PREFIX="$SOURCEDIR/build"
+#PREFIX="$SOURCEDIR/build"
 # To install the toolchain directly into the OS X Pinoccio App
-#PREFIX=/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr
+PREFIX=/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr
 
 # tools need each other and must therefore be in path
 export PATH="${PREFIX}/bin:${PATH}"
@@ -53,43 +53,43 @@ GNU_MIRROR="ftp://ftp.gnu.org/pub/gnu"
 NONGNU_MIRROR="http://savannah.nongnu.org/download"
 
 # toolchain definition
-BINUTILS=binutils-2.23
+BINUTILS=binutils-2.23.2
 BINUTILS_PACKAGE=${BINUTILS}.tar.gz
 BINUTILS_DOWNLOAD=${GNU_MIRROR}/binutils/${BINUTILS_PACKAGE}
 BINUTILS_CHECKSUM="ed58f50d8920c3f1d9cb110d5c972c27"
-BINUTILS_INSTALL=y
+BINUTILS_INSTALL=n
 
 GMP=gmp-5.0.5
 GMP_PACKAGE=${GMP}.tar.bz2
 GMP_DOWNLOAD=ftp://ftp.gmplib.org/pub/${GMP}/${GMP_PACKAGE}
 GMP_CHECKSUM="041487d25e9c230b0c42b106361055fe"
-GMP_INSTALL=y
+GMP_INSTALL=n
 
 MPFR=mpfr-3.1.2
 MPFR_PACKAGE=${MPFR}.tar.bz2
 MPFR_DOWNLOAD=http://www.mpfr.org/mpfr-current/${MPFR_PACKAGE}
 MPFR_CHECKSUM="ee2c3ac63bf0c2359bf08fc3ee094c19"
-MPFR_INSTALL=y
+MPFR_INSTALL=n
 
 MPC=mpc-1.0.1
 MPC_PACKAGE=${MPC}.tar.gz
 MPC_DOWNLOAD=http://www.multiprecision.org/mpc/download/${MPC_PACKAGE}
 MPC_CHECKSUM="b32a2e1a3daa392372fbd586d1ed3679"
-MPC_INSTALL=y
+MPC_INSTALL=n
 
-GCC=gcc-4.7.2
+GCC=gcc-4.7.3
 GCC_PACKAGE=${GCC}.tar.bz2
 GCC_DOWNLOAD=${GNU_MIRROR}/gcc/${GCC}/${GCC_PACKAGE}
-GCC_CHECKSUM="cc308a0891e778cfda7a151ab8a6e762"
-GCC_INSTALL=y
+GCC_CHECKSUM="86f428a30379bdee0224e353ee2f999e"
+GCC_INSTALL=n
 
 GDB=gdb-7.5
 GDB_PACKAGE=${GDB}.tar.bz2
 GDB_DOWNLOAD=${GNU_MIRROR}/gdb/${GDB_PACKAGE}
 GDB_CHECKSUM="24a6779a9fe0260667710de1b082ef61"
-GDB_INSTALL=y
+GDB_INSTALL=n
 
-AVRLIBC=avr-libc-1.8.0
+AVRLIBC=avr-libc-trunk
 AVRLIBC_PACKAGE=${AVRLIBC}.tar.bz2
 AVRLIBC_DOWNLOAD=${NONGNU_MIRROR}/avr-libc/${AVRLIBC_PACKAGE}
 AVRLIBC_CHECKSUM="54c71798f24c96bab206be098062344f"
@@ -99,21 +99,21 @@ UISP=uisp-20050207
 UISP_PACKAGE=${UISP}.tar.gz
 UISP_DOWNLOAD=${NONGNU_MIRROR}/uisp/${UISP_PACKAGE}
 UISP_CHECKSUM="b1e499d5a1011489635c1a0e482b1627"
-UISP_INSTALL=y
+UISP_INSTALL=n
 
-AVRDUDE=avrdude-5.11.1
+AVRDUDE=avrdude-trunk
 AVRDUDE_PACKAGE=${AVRDUDE}.tar.gz
 AVRDUDE_DOWNLOAD=${NONGNU_MIRROR}/avrdude/${AVRDUDE_PACKAGE}
 AVRDUDE_CHECKSUM="3a43e288cb32916703b6945e3f260df9"
 # uncomment if you want to build avrdude from cvs
 #AVRDUDE_CVS="cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/avrdude co avrdude"
-AVRDUDE_INSTALL=y
+AVRDUDE_INSTALL=n
 
 AVARICE=avarice-2.13
 AVARICE_PACKAGE=${AVARICE}.tar.bz2
 AVARICE_DOWNLOAD=http://downloads.sourceforge.net/project/avarice/avarice/${AVARICE}/${AVARICE_PACKAGE}
 AVARICE_CHECKSUM="b9ea1202cfe78b6b008192f092b2dd6c"
-AVARICE_INSTALL=y
+AVARICE_INSTALL=n
 
 ##
 ################################################################################
@@ -237,7 +237,7 @@ then
   echo "There's already a avr-gcc in ${TOOL},"
   echo "please remove it, as it will conflict"
   echo "with the build process!"
-  exit 1
+  #exit 1
 fi
 
 # crate ARCHIVE directory if it doesn't exist
@@ -306,9 +306,9 @@ mkdir $COMPILE_DIR
 if [ -n "$BINUTILS_INSTALL" ]; then
   echo "Building Binutils..."
   cd $COMPILE_DIR &&
-  tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz &&
+  #tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz &&
   cd $BINUTILS &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --prefix=$PREFIX --target=avr --disable-nls --enable-install-libbfd --disable-werror &&
   make &&
@@ -328,7 +328,7 @@ if [ -n "$GMP_INSTALL" ]; then
   cd ${COMPILE_DIR} &&
   tar xvfj ${ARCHIVES}/${GMP}.tar.bz2 &&
   cd ${GMP} &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$GMP --enable-cxx &&
   make -j8 &&
@@ -348,7 +348,7 @@ if [ -n "$MPFR_INSTALL" ]; then
   cd ${COMPILE_DIR} &&
   tar xvfj ${ARCHIVES}/${MPFR}.tar.bz2 &&
   cd ${MPFR} &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$MPFR --with-gmp=$COMPILE_DIR/$GMP --disable-dependency-tracking &&
   make -j8 &&
@@ -368,7 +368,7 @@ if [ -n "$MPC_INSTALL" ]; then
   cd $COMPILE_DIR &&
   tar xvfz $ARCHIVES/$MPC.tar.gz &&
   cd ${MPC} &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=$COMPILE_DIR/$MPC --with-gmp=$COMPILE_DIR/$GMP --with-mpfr=$COMPILE_DIR/$MPFR &&
   make -j8 &&
@@ -387,8 +387,11 @@ if [ -n "$GCC_INSTALL" ]; then
   echo "Building GCC ..."
   cd $COMPILE_DIR &&
   tar xvfj $ARCHIVES/$GCC.tar.bz2 &&
+  exit;
+  # copy MCU definitions for new RFR2 chips into GCC source tree
+  cp -f ../avr-mcus.def ${GCC}/gcc/config/avr/avr-mcus.def &&
   cd ${GCC} &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=$PREFIX --target=avr --enable-languages=c,c++ --disable-libssp --disable-nls --with-dwarf2 --with-gmp=$COMPILE_DIR/$GMP --with-mpfr=$COMPILE_DIR/$MPFR --with-mpc=$COMPILE_DIR/$MPC &&
   make -j8 &&
@@ -408,9 +411,10 @@ if [ -n "$AVRLIBC_INSTALL" ]; then
   cd $COMPILE_DIR &&
   tar xvfj ${ARCHIVES}/${AVRLIBC}.tar.bz2 &&
   cd ${AVRLIBC} &&
-  mkdir obj-avr &&
+  ./bootstrap &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
-  PATH=$PATH:$PREFIX/bin &&
+  PATH=$PREFIX/bin:$PATH &&
   ../configure --prefix=$PREFIX --build=`../config.guess` --host=avr &&
   CC=avr-gcc make -j8  &&
   make install
@@ -429,7 +433,7 @@ if [ -n "$GDB_INSTALL" ]; then
   cd ${COMPILE_DIR} &&
   tar xvfj ${ARCHIVES}/${GDB}.tar.bz2 &&
   cd ${GDB} &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=${PREFIX} --target=avr &&
   make -j8 &&
@@ -448,7 +452,7 @@ if [ -n "$UISP_INSTALL" ]; then
   cd ${COMPILE_DIR} &&
   tar xvfz $ARCHIVES/$UISP.tar.gz &&
   cd ${UISP} &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=$PREFIX --disable-werror &&
   sed -i'.bak' '/-Werror/d' src/Makefile &&
@@ -470,7 +474,8 @@ if [ -n "$AVRDUDE_INSTALL" ]; then
     cd ${COMPILE_DIR} &&
     tar xvfz ${ARCHIVES}/${AVRDUDE}.tar.gz &&
     cd ${AVRDUDE} &&
-    mkdir obj-avr &&
+    ./bootstrap &&
+    mkdir -p obj-avr &&
     cd obj-avr &&
     ../configure --disable-shared --enable-static --prefix=${PREFIX} &&
     make -j8 &&
@@ -485,7 +490,7 @@ if [ -n "$AVRDUDE_INSTALL" ]; then
     `$AVRDUDE_CVS` &&
     cd avrdude &&
     ./bootstrap &&
-    mkdir obj-avr &&
+    mkdir -p obj-avr &&
     cd obj-avr &&
     ../configure --disable-shared --enable-static --prefix=${PREFIX} &&
     make -j8 &&
@@ -505,7 +510,7 @@ if [ -n "$AVARICE_INSTALL" ]; then
   cd ${COMPILE_DIR} &&
   tar xvfj ${ARCHIVES}/${AVARICE}.tar.bz2 &&
   cd ${AVARICE} &&
-  mkdir obj-avr &&
+  mkdir -p obj-avr &&
   cd obj-avr &&
   ../configure --disable-shared --enable-static --prefix=${PREFIX} &&
   make -j8 &&
@@ -518,7 +523,7 @@ fi
 
 
 # Cleanup
-rm -rf ${COMPILE_DIR}
+#rm -rf ${COMPILE_DIR}
 
 ################################################################################
 echo "--------------------------------------------------------------------------------"

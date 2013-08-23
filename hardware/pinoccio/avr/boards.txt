@@ -1,20 +1,45 @@
 ##############################################################
+pinoccio.name=Pinoccio 256RFR2
+pinoccio.cpu=atmega256rfr2
 
-pinoccio.name=Pinoccio
 pinoccio.upload.tool=avrdude
-pinoccio.upload.protocol=arduino
-pinoccio.upload.maximum_size=126976
-pinoccio.upload.speed=57600
+pinoccio.upload.protocol=stk500v2
+pinoccio.upload.maximum_size=253952
+pinoccio.upload.speed=115200
 
 pinoccio.bootloader.tool=avrdude
-pinoccio.bootloader.low_fuses=0xF7
-pinoccio.bootloader.high_fuses=0xDA
-pinoccio.bootloader.extended_fuses=0xF5
+pinoccio.bootloader.low_fuses=0xDF
+pinoccio.bootloader.high_fuses=0xD0
+pinoccio.bootloader.extended_fuses=0xF0
+pinoccio.bootloader.path=stk500v2
+pinoccio.bootloader.file=stk500boot_v2_pinoccio.hex
 pinoccio.bootloader.unlock_bits=0x3F
 pinoccio.bootloader.lock_bits=0x0F
-pinoccio.bootloader.file=ATmegaBOOT_atmega128rfa1.hex
 
-pinoccio.build.mcu=atmega128rfa1
+pinoccio.build.mcu=atmega256rfr2
 pinoccio.build.f_cpu=16000000L
 pinoccio.build.core=pinoccio
 pinoccio.build.variant=pinoccio
+
+##############################################################
+pinoccio128.name=Pinoccio 128RFA1
+pinoccio128.cpu=atmega128rfa1
+
+pinoccio128.upload.tool=avrdude
+pinoccio128.upload.protocol=arduino
+pinoccio128.upload.maximum_size=129048
+pinoccio128.upload.speed=57600
+
+pinoccio128.bootloader.tool=avrdude
+pinoccio128.bootloader.low_fuses=0xFF
+pinoccio128.bootloader.high_fuses=0xDB
+pinoccio128.bootloader.extended_fuses=0xF5
+pinoccio128.bootloader.path=pinoccio
+pinoccio128.bootloader.file=ATmegaBOOT_atmega128rfa1.hex
+pinoccio128.bootloader.unlock_bits=0x3F
+pinoccio128.bootloader.lock_bits=0x0F
+
+pinoccio128.build.mcu=atmega128rfa1
+pinoccio128.build.f_cpu=16000000L
+pinoccio128.build.core=pinoccio
+pinoccio128.build.variant=pinoccio

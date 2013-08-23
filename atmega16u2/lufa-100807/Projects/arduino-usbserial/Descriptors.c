@@ -203,9 +203,9 @@ const USB_Descriptor_String_t PROGMEM LanguageString =
 const USB_Descriptor_String_t PROGMEM ManufacturerString =
 {
   #if (ARDUINO_MODEL_PID == PINOCCIO_PID)
-		.Header                 = {.Size = USB_STRING_LEN(27), .Type = DTYPE_String},
+		.Header                 = {.Size = USB_STRING_LEN(8), .Type = DTYPE_String},
 
-  	.UnicodeString          = L"Pinoccio (http://pinocc.io)"
+  	.UnicodeString          = L"Pinoccio"
 	#else
 		.Header                 = {.Size = USB_STRING_LEN(24), .Type = DTYPE_String},
 
