@@ -56,7 +56,7 @@ NONGNU_MIRROR="http://savannah.nongnu.org/download"
 BINUTILS=binutils-2.23.2
 BINUTILS_PACKAGE=${BINUTILS}.tar.gz
 BINUTILS_DOWNLOAD=${GNU_MIRROR}/binutils/${BINUTILS_PACKAGE}
-BINUTILS_CHECKSUM="ed58f50d8920c3f1d9cb110d5c972c27"
+BINUTILS_CHECKSUM="cda9dcc08c86ff2fd3f27e4adb250f6f"
 BINUTILS_INSTALL=n
 
 GMP=gmp-5.0.5
@@ -89,7 +89,7 @@ GDB_DOWNLOAD=${GNU_MIRROR}/gdb/${GDB_PACKAGE}
 GDB_CHECKSUM="24a6779a9fe0260667710de1b082ef61"
 GDB_INSTALL=n
 
-AVRLIBC=avr-libc-trunk
+AVRLIBC=avr-libc-1.8.0
 AVRLIBC_PACKAGE=${AVRLIBC}.tar.bz2
 AVRLIBC_DOWNLOAD=${NONGNU_MIRROR}/avr-libc/${AVRLIBC_PACKAGE}
 AVRLIBC_CHECKSUM="54c71798f24c96bab206be098062344f"
@@ -260,7 +260,11 @@ download_and_check() {
   fi
 
   echo "Verifying md5 of ${ARCHIVES}/${1}... "
-  MD5=`md5 -r ${ARCHIVES}/$1 | awk '{print $1}'`
+  if builtin command -v md5 > /dev/null ; then
+    MD5=`md5 -r ${ARCHIVES}/$1 | awk '{print $1}'`
+  else
+    MD5=`md5sum ${ARCHIVES}/$1 | awk '{print $1}'`
+  fi 
   if [ "$MD5" != "$3" ]
   then
     echo "Error: ${1} corrupted!" >&2
