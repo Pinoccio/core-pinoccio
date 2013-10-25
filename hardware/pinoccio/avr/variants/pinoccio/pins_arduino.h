@@ -126,7 +126,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PE  , // PE 5 ** D5  ** D5*~
   PE  , // PE 2 ** D6  ** D6
   PE  , // PE 6 ** D7  ** D7*
-  PD  , // PD 5 ** D8  ** D8*
+  PD  , // PD 5 ** D8  ** D8
   PB  , // PB 0 ** D9  ** SPI_SSN
   PB  , // PB 2 ** D10 ** SPI_MOSI
   PB  , // PB 3 ** D11 ** SPI_MISO
@@ -136,7 +136,7 @@ const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
   PD  , // PD 0 ** D15 ** I2C_SCL*
   PD  , // PD 1 ** D16 ** I2C_SDA*
   PD  , // PD 4 ** D17 ** VCC_ENABLE
-  PE  , // PE 7 ** D18 ** BATT_ALERT
+  PE  , // PE 7 ** D18 ** BATT_ALERT*
   PD  , // PD 6 ** D19 ** BACKPACK_BUS
   PD  , // PD 7 ** D20 ** CHG_STATUS
   PB  , // PB 4 ** D21 ** LED_BLUE~
@@ -158,13 +158,13 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   // -------------------------------------------
   _BV(PE0)  , // PE 0 ** D0  ** USART0_RX
   _BV(PE1)  , // PE 1 ** D1  ** USART0_TX
-  _BV(PB7)  , // PB 7 ** D2  ** D2*~
+  _BV(PB7)  , // PB 7 ** D2  ** D2~
   _BV(PE3)  , // PE 3 ** D3  ** D3~
   _BV(PE4)  , // PE 4 ** D4  ** D4*~
   _BV(PE5)  , // PE 5 ** D5  ** D5*~
   _BV(PE2)  , // PE 2 ** D6  ** D6
   _BV(PE6)  , // PE 6 ** D7  ** D7*
-  _BV(PD5)  , // PD 5 ** D8  ** D8*
+  _BV(PD5)  , // PD 5 ** D8  ** D8
   _BV(PB0)  , // PB 0 ** D9  ** SPI_SSN
   _BV(PB2)  , // PB 2 ** D10 ** SPI_MOSI
   _BV(PB3)  , // PB 3 ** D11 ** SPI_MISO
@@ -174,12 +174,12 @@ const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
   _BV(PD0)  , // PD 0 ** D15 ** I2C_SCL*
   _BV(PD1)  , // PD 1 ** D16 ** I2C_SDA*
   _BV(PD4)  , // PD 4 ** D17 ** VCC_ENABLE
-  _BV(PE7)  , // PE 7 ** D18 ** BATT_ALERT
+  _BV(PE7)  , // PE 7 ** D18 ** BATT_ALERT*
   _BV(PD6)  , // PD 6 ** D19 ** BACKPACK_BUS
   _BV(PD7)  , // PD 7 ** D20 ** CHG_STATUS
-  _BV(PB4)  , // PB 4 ** D21 ** LED_BLUE*~
-  _BV(PB5)  , // PB 5 ** D22 ** LED_RED*~
-  _BV(PB6)  , // PB 6 ** D23 ** LED_GREEN*~
+  _BV(PB4)  , // PB 4 ** D21 ** LED_BLUE~
+  _BV(PB5)  , // PB 5 ** D22 ** LED_RED~
+  _BV(PB6)  , // PB 6 ** D23 ** LED_GREEN~
   _BV(PF0)  , // PF 0 ** D24 ** A0
   _BV(PF1)  , // PF 1 ** D25 ** A1
   _BV(PF2)  , // PF 2 ** D26 ** A2
@@ -202,7 +202,7 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   TIMER3C       , // PE 5 ** D5  ** D5*~
   NOT_ON_TIMER  , // PE 2 ** D6  ** D6
   NOT_ON_TIMER  , // PE 6 ** D7  ** D7*
-  NOT_ON_TIMER  , // PD 5 ** D8  ** D8*
+  NOT_ON_TIMER  , // PD 5 ** D8  ** D8
   NOT_ON_TIMER  , // PB 0 ** D9  ** SPI_SSN
   NOT_ON_TIMER  , // PB 2 ** D10 ** SPI_MOSI
   NOT_ON_TIMER  , // PB 3 ** D11 ** SPI_MISO
@@ -212,12 +212,12 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER  , // PD 0 ** D15 ** I2C_SCL*
   NOT_ON_TIMER  , // PD 1 ** D16 ** I2C_SDA*
   NOT_ON_TIMER  , // PD 4 ** D17 ** VCC_ENABLE
-  NOT_ON_TIMER  , // PE 7 ** D18 ** BATT_ALERT
+  NOT_ON_TIMER  , // PE 7 ** D18 ** BATT_ALERT*
   NOT_ON_TIMER  , // PD 6 ** D19 ** BACKPACK_BUS
   NOT_ON_TIMER  , // PD 7 ** D20 ** CHG_STATUS
-  TIMER2A       , // PB 4 ** D21 ** LED_BLUE~
-  TIMER1A       , // PB 5 ** D22 ** LED_RED~
-  TIMER1B       , // PB 6 ** D23 ** LED_GREEN~
+  TIMER5A       , // PB 4 ** D21 ** LED_BLUE~
+  TIMER5B       , // PB 5 ** D22 ** LED_RED~
+  TIMER5C       , // PB 6 ** D23 ** LED_GREEN~
   NOT_ON_TIMER  , // PF 0 ** D24 ** A0
   NOT_ON_TIMER  , // PF 1 ** D25 ** A1
   NOT_ON_TIMER  , // PF 2 ** D26 ** A2
