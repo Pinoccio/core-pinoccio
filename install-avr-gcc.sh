@@ -81,7 +81,7 @@ GCC=gcc-4.7.3
 GCC_PACKAGE=${GCC}.tar.bz2
 GCC_DOWNLOAD=${GNU_MIRROR}/gcc/${GCC}/${GCC_PACKAGE}
 GCC_CHECKSUM="86f428a30379bdee0224e353ee2f999e"
-GCC_INSTALL=n
+GCC_INSTALL=y
 
 GDB=gdb-7.5
 GDB_PACKAGE=${GDB}.tar.bz2
@@ -89,11 +89,11 @@ GDB_DOWNLOAD=${GNU_MIRROR}/gdb/${GDB_PACKAGE}
 GDB_CHECKSUM="24a6779a9fe0260667710de1b082ef61"
 GDB_INSTALL=n
 
-AVRLIBC=avr-libc-1.8.0
+AVRLIBC=avr-libc-trunk
 AVRLIBC_PACKAGE=${AVRLIBC}.tar.bz2
 AVRLIBC_DOWNLOAD=${NONGNU_MIRROR}/avr-libc/${AVRLIBC_PACKAGE}
-AVRLIBC_CHECKSUM="54c71798f24c96bab206be098062344f"
-AVRLIBC_INSTALL=y
+AVRLIBC_CHECKSUM="49914afb6acd552444a2b13a7e4eb5ae"
+AVRLIBC_INSTALL=n
 
 UISP=uisp-20050207
 UISP_PACKAGE=${UISP}.tar.gz
@@ -104,7 +104,7 @@ UISP_INSTALL=n
 AVRDUDE=avrdude-trunk
 AVRDUDE_PACKAGE=${AVRDUDE}.tar.gz
 AVRDUDE_DOWNLOAD=${NONGNU_MIRROR}/avrdude/${AVRDUDE_PACKAGE}
-AVRDUDE_CHECKSUM="3a43e288cb32916703b6945e3f260df9"
+AVRDUDE_CHECKSUM="fc90ecc1ecb3f3b3b78901e75a07de52"
 # uncomment if you want to build avrdude from cvs
 #AVRDUDE_CVS="cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/avrdude co avrdude"
 AVRDUDE_INSTALL=n
@@ -264,7 +264,7 @@ download_and_check() {
     MD5=`md5 -r ${ARCHIVES}/$1 | awk '{print $1}'`
   else
     MD5=`md5sum ${ARCHIVES}/$1 | awk '{print $1}'`
-  fi 
+  fi
   if [ "$MD5" != "$3" ]
   then
     echo "Error: ${1} corrupted!" >&2
@@ -310,7 +310,8 @@ mkdir $COMPILE_DIR
 if [ -n "$BINUTILS_INSTALL" ]; then
   echo "Building Binutils..."
   cd $COMPILE_DIR &&
-  #tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz &&
+  tar xvfz ${ARCHIVES}/${BINUTILS}.tar.gz &&
+  cp -f ../patches/${BINUTILS}-patches/gas/config/tc-avr.c ${BINUTILS}/gas/config/tc-avr.c &&
   cd $BINUTILS &&
   mkdir -p obj-avr &&
   cd obj-avr &&
@@ -391,9 +392,8 @@ if [ -n "$GCC_INSTALL" ]; then
   echo "Building GCC ..."
   cd $COMPILE_DIR &&
   tar xvfj $ARCHIVES/$GCC.tar.bz2 &&
-  exit;
   # copy MCU definitions for new RFR2 chips into GCC source tree
-  cp -f ../avr-mcus.def ${GCC}/gcc/config/avr/avr-mcus.def &&
+  cp -f ../patches/${GCC}-patches/gcc/config/avr/avr-mcus.def ${GCC}/gcc/config/avr/avr-mcus.def &&
   cd ${GCC} &&
   mkdir -p obj-avr &&
   cd obj-avr &&
@@ -410,7 +410,7 @@ fi
 # avr-libc
 ################################################################################
 if [ -n "$AVRLIBC_INSTALL" ]; then
-  echo "Building AVR-Libc ..."
+  echo "Building avr-libc ..."
   unsetCompilerVars # make sure CC/CXX/CPP/LD env vars aren't set, or avr-libc won't build
   cd $COMPILE_DIR &&
   tar xvfj ${ARCHIVES}/${AVRLIBC}.tar.bz2 &&
