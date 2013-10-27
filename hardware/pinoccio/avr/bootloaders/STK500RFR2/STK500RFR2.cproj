@@ -61,13 +61,13 @@
     <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <eraseonlaunchrule>0</eraseonlaunchrule>
-    <avrtool>com.atmel.avrdbg.tool.edbg</avrtool>
+    <avrtool>com.atmel.avrdbg.tool.jtagice3plus</avrtool>
     <avrtoolinterface>JTAG</avrtoolinterface>
     <com_atmel_avrdbg_tool_edbg>
       <ToolOptions>
         <InterfaceProperties>
-          <JtagEnableExtResetOnStartSession>true</JtagEnableExtResetOnStartSession>
-          <JtagDbgClock>220000</JtagDbgClock>
+          <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
+          <JtagDbgClock>0</JtagDbgClock>
           <JtagInChain>false</JtagInChain>
           <JtagDevicesBefore>0</JtagDevicesBefore>
           <JtagDevicesAfter>0</JtagDevicesAfter>
@@ -80,13 +80,30 @@
       <ToolNumber>ATML1784030200000283</ToolNumber>
       <ToolName>XPRO-EDBG</ToolName>
     </com_atmel_avrdbg_tool_edbg>
+    <com_atmel_avrdbg_tool_jtagice3plus>
+      <ToolOptions>
+        <InterfaceProperties>
+          <JtagEnableExtResetOnStartSession>false</JtagEnableExtResetOnStartSession>
+          <JtagDbgClock>200000</JtagDbgClock>
+        </InterfaceProperties>
+        <InterfaceName>JTAG</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.jtagice3plus</ToolType>
+      <ToolNumber>J30200022154</ToolNumber>
+      <ToolName>JTAGICE3</ToolName>
+    </com_atmel_avrdbg_tool_jtagice3plus>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  <PropertyGroup Condition=" '$(Configuration)' == '_AVR_ATmega256RFR2_XPLAINED_PRO_' ">
     <ToolchainSettings>
       <AvrGcc>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
         <avrgcc.compiler.symbols.DefSymbols>
           <ListValues>
-            <Value>BOARD=USER_BOARD</Value>
+            <Value>_AVR_ATmega256RFR2_XPLAINED_PRO_=1</Value>
+            <Value>F_CPU=16000000UL</Value>
           </ListValues>
         </avrgcc.compiler.symbols.DefSymbols>
         <avrgcc.compiler.directories.IncludePaths>
@@ -100,6 +117,18 @@
             <Value>../src/config</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.OtherFlags>-fdata-sections</avrgcc.compiler.optimization.OtherFlags>
+        <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax</avrgcc.compiler.miscellaneous.OtherFlags>
+        <avrgcc.linker.memorysettings.Flash>
+          <ListValues>
+            <Value>.text=0x1F000</Value>
+          </ListValues>
+        </avrgcc.linker.memorysettings.Flash>
+        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,--relax</avrgcc.linker.miscellaneous.LinkerFlags>
+        <avrgcc.assembler.general.AssemblerFlags>-mrelax -DBOARD=USER_BOARD</avrgcc.assembler.general.AssemblerFlags>
         <avrgcc.assembler.general.IncludePaths>
           <ListValues>
             <Value>../src</Value>
@@ -111,26 +140,7 @@
             <Value>../src/config</Value>
           </ListValues>
         </avrgcc.assembler.general.IncludePaths>
-        <!-- Project configurable options -->
-        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
-        <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,--relax</avrgcc.linker.miscellaneous.LinkerFlags>
-        <avrgcc.linker.libraries.Libraries />
-        <avrgcc.linker.libraries.LibrarySearchPaths />
-        <avrgcc.linker.general.DoNotUseStandardStartFiles>False</avrgcc.linker.general.DoNotUseStandardStartFiles>
-        <avrgcc.linker.general.DoNotUseDefaultLibraries>False</avrgcc.linker.general.DoNotUseDefaultLibraries>
-        <avrgcc.linker.general.NoStartupOrDefaultLibs>False</avrgcc.linker.general.NoStartupOrDefaultLibs>
-        <!-- Fixed options, according to ASF 2 MEGA/XMEGA Makefile -->
-        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-        <avrgcc.compiler.optimization.DebugLevel>None</avrgcc.compiler.optimization.DebugLevel>
-        <avrgcc.linker.optimization.RelaxBranches>True</avrgcc.linker.optimization.RelaxBranches>
-        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>False</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
-        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>False</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
-        <avrgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>True</avrgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
-        <avrgcc.linker.optimization.GarbageCollectUnusedSections>True</avrgcc.linker.optimization.GarbageCollectUnusedSections>
-        <avrgcc.compiler.optimization.OtherFlags>-fdata-sections</avrgcc.compiler.optimization.OtherFlags>
-        <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax</avrgcc.compiler.miscellaneous.OtherFlags>
-        <avrgcc.assembler.general.AssemblerFlags>-mrelax -DBOARD=USER_BOARD</avrgcc.assembler.general.AssemblerFlags>
-        <avrgcc.assembler.debugging.DebugLevel>None</avrgcc.assembler.debugging.DebugLevel>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
       </AvrGcc>
     </ToolchainSettings>
     <MemorySettings />
@@ -139,7 +149,7 @@
     <GenerateListFile>True</GenerateListFile>
     <GenerateEepFile>True</GenerateEepFile>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+  <PropertyGroup Condition=" '$(Configuration)' == '_PINOCCIO_256RFR2_' ">
     <ToolchainSettings>
       <AvrGcc>
   <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
@@ -148,25 +158,35 @@
   <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
   <avrgcc.compiler.symbols.DefSymbols>
     <ListValues>
-      <Value>BOARD=USER_BOARD</Value>
+      <Value>F_CPU=16000000UL</Value>
+      <Value>_PINOCCIO_256RFR2_=1</Value>
+      <Value>pinoccio</Value>
     </ListValues>
   </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.directories.IncludePaths>
     <ListValues>
-      <Value>../src</Value>
-      <Value>../src/ASF/common/boards</Value>
-      <Value>../src/ASF/common/boards/user_board</Value>
-      <Value>../src/ASF/common/utils</Value>
-      <Value>../src/ASF/mega/utils</Value>
-      <Value>../src/ASF/mega/utils/preprocessor</Value>
-      <Value>../src/config</Value>
+      <Value>../uracoli-src/inc</Value>
+      <Value>../uracoli-src/inc/boards</Value>
     </ListValues>
   </avrgcc.compiler.directories.IncludePaths>
-  <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+  <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
   <avrgcc.compiler.optimization.OtherFlags>-fdata-sections</avrgcc.compiler.optimization.OtherFlags>
+  <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
   <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
   <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-  <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Werror-implicit-function-declaration -Wpointer-arith -mrelax</avrgcc.compiler.miscellaneous.OtherFlags>
+  <avrgcc.compiler.warnings.Pedantic>True</avrgcc.compiler.warnings.Pedantic>
+  <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -fno-strict-aliasing -Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith -mrelax</avrgcc.compiler.miscellaneous.OtherFlags>
+  <avrgcc.linker.libraries.Libraries>
+    <ListValues>
+      <Value>uracoli_pinoccio</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.Libraries>
+  <avrgcc.linker.libraries.LibrarySearchPaths>
+    <ListValues>
+      <Value>../uracoli-src/lib</Value>
+    </ListValues>
+  </avrgcc.linker.libraries.LibrarySearchPaths>
   <avrgcc.linker.memorysettings.Flash>
     <ListValues>
       <Value>.text=0x1F000</Value>
@@ -193,6 +213,7 @@
     <GenerateMapFile>True</GenerateMapFile>
     <GenerateListFile>True</GenerateListFile>
     <GenerateEepFile>True</GenerateEepFile>
+    <OutputPath>bin\_PINOCCIO_256RFR2_\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="src\avrinterruptnames.h">
@@ -207,75 +228,17 @@
     <Compile Include="src\main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\ASF\common\boards\user_board\init.c">
+    <Compile Include="src\wibo.c">
       <SubType>compile</SubType>
+      <Link>src\wibo.c</Link>
     </Compile>
-    <None Include="src\asf.h">
+    <Compile Include="src\wibo.h">
       <SubType>compile</SubType>
-    </None>
-    <None Include="src\config\conf_board.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\boards\board.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\boards\user_board\user_board.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\utils\interrupt.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\utils\interrupt\interrupt_avr8.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\utils\make\Makefile.avr.in">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\common\utils\parts.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\assembler.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\assembler\gas.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\compiler.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\preprocessor\mrepeat.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\preprocessor\preprocessor.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\preprocessor\stringz.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\preprocessor\tpaste.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\progmem.h">
-      <SubType>compile</SubType>
-    </None>
-    <None Include="src\ASF\mega\utils\status_codes.h">
-      <SubType>compile</SubType>
-    </None>
+      <Link>src\wibo.h</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />
-    <Folder Include="src\ASF\" />
-    <Folder Include="src\ASF\common\" />
-    <Folder Include="src\ASF\common\boards\" />
-    <Folder Include="src\ASF\common\boards\user_board\" />
-    <Folder Include="src\ASF\common\utils\" />
-    <Folder Include="src\ASF\common\utils\interrupt\" />
-    <Folder Include="src\ASF\common\utils\make\" />
-    <Folder Include="src\ASF\mega\" />
-    <Folder Include="src\ASF\mega\utils\" />
-    <Folder Include="src\ASF\mega\utils\assembler\" />
-    <Folder Include="src\ASF\mega\utils\preprocessor\" />
-    <Folder Include="src\config\" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\AvrGCC.targets" />
 </Project>

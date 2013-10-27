@@ -101,13 +101,6 @@ LICENSE:
 //*	Issue 181: added watch dog timmer support
 #define	_FIX_ISSUE_181_
 
-#define F_CPU 16000000UL
-
-
-// Define build target - Atmel dev board or pinoccio board
-#define _AVR_ATmega256RFR2_XPLAINED_PRO_
-//#define _PINOCCIO_256RFR2_
-
 
 #include	<inttypes.h>
 #include	<avr/io.h>
@@ -120,10 +113,13 @@ LICENSE:
 #include	<stdlib.h>
 #include	"command.h"
 
+#include "board.h" // uracoli
+
+#include "wibo.h"
 
 #if defined(_MEGA_BOARD_) || defined(_BOARD_AMBER128_) || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__) || defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega256RFR2__) || defined(ENABLE_MONITOR)
 	#undef		ENABLE_MONITOR
-	#define		ENABLE_MONITOR
+	//#define		ENABLE_MONITOR
 	static void	RunMonitor(void);
 #endif
 
@@ -328,7 +324,7 @@ LICENSE:
 	#error "no signature definition for MCU available"
 #endif
 
-#if defined(_AVR_ATmega256RFR2_XPLAINED_PRO_)
+#if defined(_AVR_ATmega256RFR2_XPLAINED_PRO_) || defined(_BOARD_PINOCCIO_256RFR2_) // TODO: remove latter one
 	// Xplained Pro board uses UART1 for virtual com port
 	#define	UART_BAUD_RATE_LOW			UBRR1L
 	#define	UART_STATUS_REG				UCSR1A
@@ -654,9 +650,18 @@ int main(void)
 
 	asm volatile ("nop");			// wait until port has changed
 
+#if 1
+	/* decide here where to fetch IEEE 802.15.4 comm parameters */
+	node_config_t nodeconfig;
+	get_node_config(&nodeconfig);
+	wibo_init(nodeconfig.channel ,nodeconfig.pan_id ,nodeconfig.short_addr, nodeconfig.ieee_addr);
+#else
+	// useful for debug session
+	wibo_init(14, 0x0022, 3, 0);
+#endif
+
 #ifdef _DEBUG_SERIAL_
 //	delay_ms(500);
-
 	sendchar('s');
 	sendchar('t');
 	sendchar('k');
@@ -679,21 +684,24 @@ int main(void)
 			boot_timer++;
 			if (boot_timer > boot_timeout)
 			{
-				boot_state	=	1; // (after ++ -> boot_state=2 bootloader timeout, jump to main 0x00000 )
+				boot_state	=	2; // (after ++ -> boot_state=2 bootloader timeout, jump to main 0x00000 )
 			}
-		#ifdef BLINK_LED_WHILE_WAITING
+#ifdef BLINK_LED_WHILE_WAITING
 			if ((boot_timer % _BLINK_LOOP_COUNT_) == 0)
 			{
 				//*	toggle the LED
 				PROGLED_PORT	^=	(1<<PROGLED_PIN);	// turn LED ON
 			}
-		#endif
+#endif
+
+			if(wibo_available()){
+				boot_state=1;
+			}
 		}
 		boot_state++; // ( if boot_state=1 bootloader received byte from UART, enter bootloader mode)
 	}
 
-
-	if (boot_state==1)
+	if (boot_state==1) // enter serial bootloader
 	{
 		//*	main loop
 		while (!isLeave)
@@ -713,7 +721,6 @@ int main(void)
 				{
 				//	c	=	recchar();
 					c	=	recchar_timeout();
-					
 				}
 
 			#ifdef ENABLE_MONITOR
@@ -1152,6 +1159,8 @@ int main(void)
 		#endif
 
 		}
+	} else if (boot_state == 2) { // wireless bootloader
+		wibo_run();
 	}
 
 #ifdef _DEBUG_WITH_LEDS_
