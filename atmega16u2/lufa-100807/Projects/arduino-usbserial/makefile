@@ -63,7 +63,7 @@
 #	versions of either avrdude or dfu-programmer, we specify a dummy
 #	part; AT90USB82 which is close enough in memory size and organization
 MCU = atmega16u2
-MCU_AVRDUDE = at90usb162
+MCU_AVRDUDE = atmega16u2
 MCU_DFU = atmega16u2
 #MCU = atmega16u2
 #MCU_AVRDUDE = usb162
@@ -375,7 +375,7 @@ LDFLAGS += $(PRINTF_LIB) $(SCANF_LIB) $(MATH_LIB)
 AVRDUDE_PROGRAMMER = avrispmkii
 
 # Fuse settings for Arduino Uno DFU bootloader project
-AVRDUDE_FUSES = -U efuse:w:0xF4:m -U hfuse:w:0xD9:m -U lfuse:w:0xFF:m
+AVRDUDE_FUSES = -U efuse:w:0xF4:m -U hfuse:w:0xD9:m -U lfuse:w:0xEF:m
 
 # Lock settings for Arduino Uno DFU bootloader project
 AVRDUDE_LOCK = -U lock:w:0x0F:m
@@ -384,6 +384,7 @@ AVRDUDE_LOCK = -U lock:w:0x0F:m
 AVRDUDE_PORT = usb
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
+AVRDUDE_WRITE_FUSES = $(AVRDUDE_FUSES)
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
 
 
@@ -394,14 +395,14 @@ AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
 
 # Uncomment the following if you do /not/ wish a verification to be
 # performed after programming the device.
-#AVRDUDE_NO_VERIFY = -V
+AVRDUDE_NO_VERIFY = -V
 
 # Increase verbosity level.  Please use this when submitting bug
 # reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude>
 # to submit bug reports.
-#AVRDUDE_VERBOSE = -v -v
+AVRDUDE_VERBOSE = -v -v
 
-AVRDUDE_FORCE = -F
+#AVRDUDE_FORCE = -F
 
 AVRDUDE_FLAGS = -p $(MCU_AVRDUDE) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
 AVRDUDE_FLAGS += $(AVRDUDE_NO_VERIFY)
@@ -583,6 +584,9 @@ gccversion :
 # Program the device.
 program: $(TARGET).hex $(TARGET).eep
 	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM) $(AVRDUDE_FUSES) $(AVRDUDE_LOCK)
+
+fuses: $(TARGET).hex $(TARGET).eep
+	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_FUSES) $(AVRDUDE_LOCK)
 
 flip: $(TARGET).hex
 	batchisp -hardware usb -device $(MCU_DFU) -operation erase f

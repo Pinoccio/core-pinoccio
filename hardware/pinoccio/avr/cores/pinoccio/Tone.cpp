@@ -86,7 +86,7 @@ volatile uint8_t timer5_pin_mask;
 
 
 // MLS: This does not make sense, the 3 options are the same
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega128RFA1__) || defined(__AVR_ATmega256RFR2__)
 
 #define AVAILABLE_TONE_PINS 1
 

@@ -97,7 +97,7 @@ F_CLOCK = $(F_CPU)
 #
 # Note that the bootloader size and start address given in AVRStudio is in words and not
 # bytes, and so will need to be doubled to obtain the byte address needed by AVR-GCC.
-BOOT_START =  0x1000
+BOOT_START =  0x3000
 
 
 # Output format. (can be srec, ihex, binary)
