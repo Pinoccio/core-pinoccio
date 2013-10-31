@@ -188,60 +188,6 @@ void __attribute__ ((section (".bootlup"))) __attribute__((noreturn)) bootlup()
 }
 #endif /* defined(WIBO_FLAVOUR_BOOTLUP) */
 
-/*
- * \brief Program a page
- * (1) Erase the page containing at the given address
- * (2) Fill the page buffer
- * (3) Write the page buffer
- * (4) Wait for finish
- *
- * @param addr The address containing the page to program
- * @param *buf Pointer to buffer of page content
- */
-static inline void boot_program_page(uint32_t addr, uint8_t *buf)
-{
-#if SPM_PAGESIZE > 255
-	uint16_t i;
-#else
-	uint8_t i;
-#endif
-
-#if defined(SERIALDEBUG)
-	printf("Write Flash addr=%04lX"EOL, addr);
-	/*
-	 for (i = 0; i < SPM_PAGESIZE; i++)
-	 {
-	 if (!(i % 16))
-	 {
-	 putchar('\n');
-	 putchar(' ');
-	 putchar(' ');
-	 }
-	 printf(" %02X", buf[i]);
-	 }
-	 putchar('\n');
-	 */
-#else /* defined(SERIALDEBUG) */
-	boot_page_erase(addr);
-	boot_spm_busy_wait();
-
-	i = SPM_PAGESIZE;
-	do
-	{
-		/* Set up little-endian word */
-		uint16_t w = *buf++;
-		w += (*buf++) << 8;
-
-		boot_page_fill(addr + SPM_PAGESIZE - i, w);
-
-		i -= 2;
-	} while (i);
-
-	boot_page_write(addr);
-	boot_spm_busy_wait();
-#endif /* defined(SERIALDEBUG) */
-}
-
 void wibo_init(uint8_t channel, uint16_t pan_id, uint16_t short_addr, uint64_t ieee_addr)
 {
 #if defined(WIBO_FLAVOUR_KEYPRESS) || defined(WIBO_FLAVOUR_MAILBOX)
@@ -289,13 +235,13 @@ void wibo_init(uint8_t channel, uint16_t pan_id, uint16_t short_addr, uint64_t i
 	nodeconfig.ieee_addr = ieee_addr;
 
 	trx_io_init(DEFAULT_SPI_RATE);
-	TRX_RESET_LOW()
-	;
-	TRX_SLPTR_LOW()
-	;
-	TRX_RESET_HIGH()
-	;
+	TRX_RESET_LOW();
+	TRX_SLPTR_LOW();
+	TRX_RESET_HIGH();
 
+#if defined(DI_TRX_IRQ)
+	DI_TRX_IRQ();
+#endif
 	trx_reg_write(RG_TRX_STATE, CMD_FORCE_TRX_OFF);
 
 #if (RADIO_TYPE == RADIO_AT86RF230A) || (RADIO_TYPE == RADIO_AT86RF230B)
@@ -327,6 +273,7 @@ void wibo_init(uint8_t channel, uint16_t pan_id, uint16_t short_addr, uint64_t i
 
 	trx_reg_write(RG_CSMA_SEED_0, nodeconfig.short_addr); /* some seeding */
 	trx_reg_write(RG_TRX_STATE, CMD_RX_AACK_ON);
+	trx_reg_write(RG_IRQ_STATUS, TRX_IRQ_RX_END); /* clear the flag */
 
 #if defined(SERIALDEBUG)
 	static FILE usart_stdio = FDEV_SETUP_STREAM(hif_putc, NULL, _FDEV_SETUP_WRITE);
@@ -355,14 +302,8 @@ uint8_t wibo_run(void)
 	while(!isLeave) {
 		LED_CLR(0);
 
-#if defined(TRX_IF_RFA1)
-		while (!(trx_reg_read(RG_IRQ_STATUS) & TRX_IRQ_RX_END))
-			;
+		while(0 == (trx_reg_read(RG_IRQ_STATUS) & TRX_IRQ_RX_END));
 		trx_reg_write(RG_IRQ_STATUS, TRX_IRQ_RX_END); /* clear the flag */
-#else
-		while (!(trx_reg_read(RG_IRQ_STATUS) & TRX_IRQ_TRX_END))
-		;
-#endif
 
 		trx_frame_read(rxbuf.data, sizeof(rxbuf.data) / sizeof(rxbuf.data[0]),
 				&tmp); /* dont use LQI, write into tmp variable */

@@ -161,6 +161,7 @@
       <Value>F_CPU=16000000UL</Value>
       <Value>_PINOCCIO_256RFR2_=1</Value>
       <Value>pinoccio</Value>
+      <Value>_SW_VERSION_=5</Value>
     </ListValues>
   </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.directories.IncludePaths>
@@ -190,6 +191,7 @@
   <avrgcc.linker.memorysettings.Flash>
     <ListValues>
       <Value>.text=0x1F000</Value>
+      <Value>.bootlup=0x1FE80</Value>
     </ListValues>
   </avrgcc.linker.memorysettings.Flash>
   <avrgcc.linker.miscellaneous.LinkerFlags>-Wl,--relax</avrgcc.linker.miscellaneous.LinkerFlags>

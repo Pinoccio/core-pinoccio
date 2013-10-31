@@ -99,7 +99,7 @@ LICENSE:
 #define	_FIX_ISSUE_505_
 //************************************************************************
 //*	Issue 181: added watch dog timmer support
-#define	_FIX_ISSUE_181_
+//#define	_FIX_ISSUE_181_
 
 
 #include	<inttypes.h>
@@ -131,7 +131,7 @@ LICENSE:
 #endif
 
 //#define	_DEBUG_SERIAL_
-#define	_DEBUG_WITH_LEDS_
+//#define	_DEBUG_WITH_LEDS_
 
 
 /*
@@ -478,6 +478,7 @@ void	PrintHexByte(unsigned char theByte);
 
 
 //*****************************************************************************
+#if 0
 void delay_ms(unsigned int timedelay)
 {
 	unsigned int i;
@@ -486,7 +487,9 @@ void delay_ms(unsigned int timedelay)
 		_delay_ms(0.5);
 	}
 }
-
+#else
+#define delay_ms(x) _delay_ms(x) // use avr-libc func
+#endif
 
 //*****************************************************************************
 /*
@@ -1005,7 +1008,7 @@ int main(void)
 					break;
 	#endif
 				case CMD_CHIP_ERASE_ISP:
-					eraseAddress	=	0;
+					eraseAddress	=	0; // dthiele: should be removed, address is always given in actual message
 					msgLength		=	2;
 				//	msgBuffer[1]	=	STATUS_CMD_OK;
 					msgBuffer[1]	=	STATUS_CMD_FAILED;	//*	isue 543, return FAILED instead of OK

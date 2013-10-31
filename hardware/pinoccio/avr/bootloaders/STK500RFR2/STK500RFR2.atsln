@@ -6,16 +6,10 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		_PINOCCIO_256RFR2_|AVR = _PINOCCIO_256RFR2_|AVR
-		Debug|AVR = Debug|AVR
-		Release|AVR = Release|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}._PINOCCIO_256RFR2_|AVR.ActiveCfg = _PINOCCIO_256RFR2_|AVR
 		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}._PINOCCIO_256RFR2_|AVR.Build.0 = _PINOCCIO_256RFR2_|AVR
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Debug|AVR.ActiveCfg = _AVR_ATmega256RFR2_XPLAINED_PRO_|AVR
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Debug|AVR.Build.0 = _AVR_ATmega256RFR2_XPLAINED_PRO_|AVR
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Release|AVR.ActiveCfg = _AVR_ATmega256RFR2_XPLAINED_PRO_|AVR
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Release|AVR.Build.0 = _AVR_ATmega256RFR2_XPLAINED_PRO_|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
