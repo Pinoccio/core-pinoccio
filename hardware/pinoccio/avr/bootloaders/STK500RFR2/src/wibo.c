@@ -82,6 +82,8 @@
 #define _SW_VERSION_ 0x05
 #endif
 
+//#define NO_LEDS (1)
+
 /* serial debug printout via USART0, using uracoli ioutil/hif module */
 #ifndef SERIALDEBUG
 //#define SERIALDEBUG (1)
@@ -225,9 +227,10 @@ void wibo_init(uint8_t channel, uint16_t pan_id, uint16_t short_addr, uint64_t i
 	}
 #endif
 
-	LED_INIT()
-	;
+#if !defined(NO_LEDS)
+	LED_INIT();
 	LED_SET(0);
+#endif
 
 	nodeconfig.channel=channel;
 	nodeconfig.pan_id=pan_id;
@@ -300,7 +303,9 @@ uint8_t wibo_run(void)
 	uint8_t isLeave=0;
 
 	while(!isLeave) {
+#if !defined(NO_LEDS)
 		LED_CLR(0);
+#endif
 
 		while(0 == (trx_reg_read(RG_IRQ_STATUS) & TRX_IRQ_RX_END));
 		trx_reg_write(RG_IRQ_STATUS, TRX_IRQ_RX_END); /* clear the flag */
@@ -308,8 +313,10 @@ uint8_t wibo_run(void)
 		trx_frame_read(rxbuf.data, sizeof(rxbuf.data) / sizeof(rxbuf.data[0]),
 				&tmp); /* dont use LQI, write into tmp variable */
 
+#if !defined(NO_LEDS)
 		LED_SET(0);
 		/* light as long as actions are running */
+#endif
 
 		switch (rxbuf.hdr.cmd)
 		{
@@ -401,7 +408,10 @@ uint8_t wibo_run(void)
 					/* LED off to save current and avoid flash corruption
 					 *  because of possible voltage drops
 					 */
+#if !defined(NO_LEDS)
 					LED_CLR(0);
+#endif
+
 					if (target == 'F') /* Flash memory */
 					{
 						boot_program_page(addr, pagebuf);
@@ -455,7 +465,9 @@ uint8_t wibo_run(void)
 #if defined(SERIALDEBUG)
 			printf("Exit"EOL);
 #endif
+#if !defined(NO_LEDS)
 			LED_CLR(0);
+#endif
 			isLeave=1;
 			break;
 
