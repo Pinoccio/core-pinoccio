@@ -79,20 +79,14 @@
 #include "wibo.h"
 
 #ifndef _SW_VERSION_
-#define _SW_VERSION_ 0x05
+#error "Symbol _SW_VERSION_ not defined"
 #endif
 
 //#define NO_LEDS (1)
 
-/* serial debug printout via USART0, using uracoli ioutil/hif module */
-#ifndef SERIALDEBUG
-//#define SERIALDEBUG (1)
-#endif
-
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 #include <avr/interrupt.h>
 #include <hif.h>
-
 #define EOL "\n"
 #endif
 
@@ -278,7 +272,7 @@ void wibo_init(uint8_t channel, uint16_t pan_id, uint16_t short_addr, uint64_t i
 	trx_reg_write(RG_TRX_STATE, CMD_RX_AACK_ON);
 	trx_reg_write(RG_IRQ_STATUS, TRX_IRQ_RX_END); /* clear the flag */
 
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 	static FILE usart_stdio = FDEV_SETUP_STREAM(hif_putc, NULL, _FDEV_SETUP_WRITE);
 
 	hif_init(HIF_DEFAULT_BAUDRATE);
@@ -339,7 +333,7 @@ uint8_t wibo_run(void)
 						(uint8_t*) &pingrep);
 				/*******************************************************/
 
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 				printf("Pinged by 0x%04X"EOL, rxbuf.hdr.src);
 #endif
 
@@ -357,13 +351,13 @@ uint8_t wibo_run(void)
 
 		case P2P_WIBO_TARGET:
 			target = rxbuf.wibo_target.targmem;
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 			printf("Set Target to %c"EOL, target);
 #endif
 			break;
 
 		case P2P_WIBO_RESET:
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 			printf("Reset"EOL);
 #endif
 
@@ -381,7 +375,7 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_ADDR:
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 			printf("Set address: 0x%08lX"EOL, rxbuf.wibo_addr.address);
 #endif
 			addr = rxbuf.wibo_addr.address;
@@ -389,7 +383,7 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_DATA:
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 			printf("Data[%d]", rxbuf.wibo_data.dsize);
 			for(uint8_t j=0;j<rxbuf.wibo_data.dsize;j++)
 			{
@@ -439,7 +433,7 @@ uint8_t wibo_run(void)
 #endif
 
 		case P2P_WIBO_FINISH:
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 			printf("Finish"EOL);
 #endif
 			if (target == 'F') /* Flash memory */
@@ -462,7 +456,7 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_EXIT:
-#if defined(SERIALDEBUG)
+#if defined(_DEBUG_SERIAL_)
 			printf("Exit"EOL);
 #endif
 #if !defined(NO_LEDS)
