@@ -18,7 +18,7 @@ pinoccio.bootloader.lock_bits=0x0F
 
 pinoccio.build.mcu=atmega256rfr2
 pinoccio.build.f_cpu=16000000L
-pinoccio.build.core=pinoccio
+pinoccio.build.core=arduino
 pinoccio.build.variant=pinoccio
 
 ##############################################################

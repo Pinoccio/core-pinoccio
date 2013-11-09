@@ -4,7 +4,8 @@ stk500boot.o: stk500boot.c \
  /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/stdint.h \
  /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/io.h \
  /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/sfr_defs.h \
- /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/iom256rfr2.h \
+ /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/iom1280.h \
+ /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/iomxx0_1.h \
  /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/portpins.h \
  /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/common.h \
  /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/version.h \
@@ -32,7 +33,9 @@ stk500boot.o: stk500boot.c \
 
 /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/sfr_defs.h:
 
-/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/iom256rfr2.h:
+/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/iom1280.h:
+
+/Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/iomxx0_1.h:
 
 /Applications/Pinoccio.app/Contents/Resources/Java/hardware/tools/avr/lib/gcc/avr/4.7.3/../../../../avr/include/avr/portpins.h:
 
