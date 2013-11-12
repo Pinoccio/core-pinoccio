@@ -5,14 +5,11 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "STK500RFR2", "STK500RFR2.cp
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|AVR = Debug|AVR
-		Release|AVR = Release|AVR
+		_PINOCCIO_256RFR2_|AVR = _PINOCCIO_256RFR2_|AVR
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Debug|AVR.ActiveCfg = Debug|AVR
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Debug|AVR.Build.0 = Debug|AVR
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Release|AVR.ActiveCfg = Release|AVR
-		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}.Release|AVR.Build.0 = Release|AVR
+		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}._PINOCCIO_256RFR2_|AVR.ActiveCfg = _PINOCCIO_256RFR2_|AVR
+		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}._PINOCCIO_256RFR2_|AVR.Build.0 = _PINOCCIO_256RFR2_|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

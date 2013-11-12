@@ -99,14 +99,7 @@ LICENSE:
 #define	_FIX_ISSUE_505_
 //************************************************************************
 //*	Issue 181: added watch dog timmer support
-#define	_FIX_ISSUE_181_
-
-#define F_CPU 16000000UL
-
-
-// Define build target - Atmel dev board or pinoccio board
-#define _AVR_ATmega256RFR2_XPLAINED_PRO_
-//#define _PINOCCIO_256RFR2_
+//#define	_FIX_ISSUE_181_
 
 
 #include	<inttypes.h>
@@ -120,10 +113,13 @@ LICENSE:
 #include	<stdlib.h>
 #include	"command.h"
 
+#include "board.h" // uracoli
+
+#include "wibo.h"
 
 #if defined(_MEGA_BOARD_) || defined(_BOARD_AMBER128_) || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__) || defined(__AVR_ATmega1284P__) || defined(__AVR_ATmega256RFR2__) || defined(ENABLE_MONITOR)
 	#undef		ENABLE_MONITOR
-	#define		ENABLE_MONITOR
+	//#define		ENABLE_MONITOR
 	static void	RunMonitor(void);
 #endif
 
@@ -134,8 +130,8 @@ LICENSE:
 	#define EEMWE   2
 #endif
 
-//#define	_DEBUG_SERIAL_
-#define	_DEBUG_WITH_LEDS_
+//#define	_DEBUG_SERIAL_ (1)
+//#define	_DEBUG_WITH_LEDS_ (1)
 
 
 /*
@@ -203,7 +199,8 @@ LICENSE:
 	#define PROGLED_PORT	PORTB
 	#define PROGLED_DDR		DDRB
 	#define PROGLED_PIN		PINB6
-	#define UART_BAUDRATE_DOUBLE_SPEED 0
+	#define PROGLED_LOWACTIVE (1)
+	#define UART_BAUDRATE_DOUBLE_SPEED 1
 #elif defined( _BOARD_ROBOTX_ )
 	#define PROGLED_PORT	PORTB
 	#define PROGLED_DDR		DDRB
@@ -364,7 +361,8 @@ LICENSE:
 	#define	UART_DOUBLE_SPEED			U2X
 
 #elif defined(__AVR_ATmega64__) || defined(__AVR_ATmega128__) || defined(__AVR_ATmega162__) \
-	 || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__) || defined(__AVR_ATmega256RFR2__)	 
+	 || defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__AVR_ATmega2561__) || defined(__AVR_ATmega256RFR2__)	  \
+	 || defined(_PINOCCIO_256RFR2_)
 	/* ATMega with two USART, use UART0 */
 	#define	UART_BAUD_RATE_LOW			UBRR0L
 	#define	UART_STATUS_REG				UCSR0A
@@ -482,6 +480,7 @@ void	PrintHexByte(unsigned char theByte);
 
 
 //*****************************************************************************
+#if 0
 void delay_ms(unsigned int timedelay)
 {
 	unsigned int i;
@@ -490,7 +489,9 @@ void delay_ms(unsigned int timedelay)
 		_delay_ms(0.5);
 	}
 }
-
+#else
+#define delay_ms(x) _delay_ms(x) // use avr-libc func
+#endif
 
 //*****************************************************************************
 /*
@@ -628,15 +629,17 @@ int main(void)
 #ifndef REMOVE_BOOTLOADER_LED
 	/* PROG_PIN pulled low, indicate with LED that bootloader is active */
 	PROGLED_DDR		|=	(1<<PROGLED_PIN);
-//	PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// active low LED ON
+#if defined(PROGLED_LOWACTIVE)
 	PROGLED_PORT	|=	(1<<PROGLED_PIN);	// active high LED ON
+#else
+	PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// active low LED ON
+#endif
+
 
 #ifdef _DEBUG_WITH_LEDS_
 	for (ii=0; ii<3; ii++)
 	{
-		PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// turn LED off
-		delay_ms(100);
-		PROGLED_PORT	|=	(1<<PROGLED_PIN);	// turn LED on
+		PROGLED_PORT	^=	(1<<PROGLED_PIN);	// toggle LED
 		delay_ms(100);
 	}
 #endif
@@ -654,9 +657,27 @@ int main(void)
 
 	asm volatile ("nop");			// wait until port has changed
 
+	/* decide here where to fetch IEEE 802.15.4 comm parameters */
+#if defined(_PINOCCIO_256RFR2_)
+	  // Address 8130 - 32 bytes - HQ Token
+	  // Address 8162 - 16 bytes - Security Key
+	  // Address 8178 - 1 byte   - Transmitter Power
+	  // Address 8179 - 1 byte   - Frequency Channel
+	  // Address 8180 - 2 bytes  - Network Identifier/Troop ID
+	  // Address 8182 - 2 bytes  - Network Address/Scout ID
+	  // Address 8184 - 4 bytes  - Unique ID
+	  // Address 8188 - 2 bytes  - HW family
+	  // Address 8190 - 1 byte   - HW Version
+	  // Address 8191 - 1 byte   - EEPROM Version
+	wibo_init(eeprom_read_byte((uint8_t *)8179), eeprom_read_word((uint16_t *)8180), eeprom_read_word((uint16_t *)8182), 0);
+#else
+	node_config_t nodeconfig;
+	get_node_config(&nodeconfig);
+	wibo_init(nodeconfig.channel ,nodeconfig.pan_id ,nodeconfig.short_addr, nodeconfig.ieee_addr);
+#endif
+
 #ifdef _DEBUG_SERIAL_
 //	delay_ms(500);
-
 	sendchar('s');
 	sendchar('t');
 	sendchar('k');
@@ -679,21 +700,30 @@ int main(void)
 			boot_timer++;
 			if (boot_timer > boot_timeout)
 			{
-				boot_state	=	1; // (after ++ -> boot_state=2 bootloader timeout, jump to main 0x00000 )
+				boot_state	=	2; // (after ++ -> boot_state=2 bootloader timeout, jump to main 0x00000 )
 			}
-		#ifdef BLINK_LED_WHILE_WAITING
+#ifdef BLINK_LED_WHILE_WAITING
 			if ((boot_timer % _BLINK_LOOP_COUNT_) == 0)
 			{
 				//*	toggle the LED
-				PROGLED_PORT	^=	(1<<PROGLED_PIN);	// turn LED ON
+				PROGLED_PORT	^=	(1<<PROGLED_PIN);
 			}
-		#endif
+#endif
+
+			if(wibo_available()){
+				boot_state=1;
+			}
 		}
 		boot_state++; // ( if boot_state=1 bootloader received byte from UART, enter bootloader mode)
 	}
 
+#if defined(PROGLED_LOWACTIVE)
+	PROGLED_PORT	|=	(1<<PROGLED_PIN);	// active low LED Off
+#else
+	PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// active high LED Off
+#endif
 
-	if (boot_state==1)
+	if (boot_state==1) // enter serial bootloader
 	{
 		//*	main loop
 		while (!isLeave)
@@ -713,7 +743,6 @@ int main(void)
 				{
 				//	c	=	recchar();
 					c	=	recchar_timeout();
-					
 				}
 
 			#ifdef ENABLE_MONITOR
@@ -998,7 +1027,7 @@ int main(void)
 					break;
 	#endif
 				case CMD_CHIP_ERASE_ISP:
-					eraseAddress	=	0;
+					eraseAddress	=	0; // dthiele: should be removed, address is always given in actual message
 					msgLength		=	2;
 				//	msgBuffer[1]	=	STATUS_CMD_OK;
 					msgBuffer[1]	=	STATUS_CMD_FAILED;	//*	isue 543, return FAILED instead of OK
@@ -1152,18 +1181,22 @@ int main(void)
 		#endif
 
 		}
+	} else if (boot_state == 2) { // wireless bootloader
+		wibo_run();
 	}
 
 #ifdef _DEBUG_WITH_LEDS_
 	//*	this is for debugging it can be removed
 	for (ii=0; ii<10; ii++)
 	{
-		PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// turn LED off
-		delay_ms(200);
-		PROGLED_PORT	|=	(1<<PROGLED_PIN);	// turn LED on
+		PROGLED_PORT	^=	(1<<PROGLED_PIN);	// toggle LED
 		delay_ms(200);
 	}
-	PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// turn LED off
+#if defined(PROGLED_LOWACTIVE)
+	PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// active high LED Off
+#else
+	PROGLED_PORT	|=	(1<<PROGLED_PIN);	// active low LED Off
+#endif
 #endif
 
 #ifdef _DEBUG_SERIAL_
@@ -1184,8 +1217,11 @@ int main(void)
 
 #ifndef REMOVE_BOOTLOADER_LED
 	PROGLED_DDR		&=	~(1<<PROGLED_PIN);	// set to default
-	PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// active low LED OFF
-//	PROGLED_PORT	|=	(1<<PROGLED_PIN);	// active high LED OFf
+#if defined(PROGLED_LOWACTIVE)
+	PROGLED_PORT	&=	~(1<<PROGLED_PIN);	// active high LED Off
+#else
+	PROGLED_PORT	|=	(1<<PROGLED_PIN);	// active low LED Off
+#endif
 	delay_ms(100);							// delay after exit
 #endif
 
