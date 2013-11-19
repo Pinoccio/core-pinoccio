@@ -1,0 +1,17 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "STK500RFR2", "STK500RFR2.cproj", "{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		_PINOCCIO_256RFR2_|AVR = _PINOCCIO_256RFR2_|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}._PINOCCIO_256RFR2_|AVR.ActiveCfg = _PINOCCIO_256RFR2_|AVR
+		{C331F1EE-7ACC-4F4A-B5E7-5463EB3C23A8}._PINOCCIO_256RFR2_|AVR.Build.0 = _PINOCCIO_256RFR2_|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
