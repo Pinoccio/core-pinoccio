@@ -19,9 +19,9 @@ When using /usr/local/avr as the PREFIX install dir (default) the pinoccio-ardui
 
 3) Replace Arduino IDE's avr-gcc and avrdude components with symlinks to the ones installed by the install script in #2:
 
-    arduino-1.5.4/hardware/tools/avr/bin/avrdude --> PREFIX/bin/avrdude
-    arduino-1.5.4/hardware/tools/avr/bin/avrdude.conf --> PREFIX/etc/avrdude.conf
-    arduino-1.5.4/hardware/tools/avr/bin/avr/bin/ --> PREFIX/bin/
+    arduino-1.5.4/hardware/tools/avrdude --> PREFIX/bin/avrdude
+    arduino-1.5.4/hardware/tools/avrdude.conf --> PREFIX/etc/avrdude.conf
+    arduino-1.5.4/hardware/tools/avr/bin/ --> PREFIX/bin/
 
 4) Install Pinoccio support into the arduino IDE.  'git clone https://github.com/Pinoccio/pinoccio-arduino-library.git' somewhere convenient (inside your home tree is good).  You can then create a symlink to it in your arduino user libraries folder which should be ~/Arduino/libraries (IDE creates this automagically and puts a readme in it):
 
