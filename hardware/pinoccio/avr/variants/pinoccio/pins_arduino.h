@@ -32,32 +32,32 @@
 #define analogInputToDigitalPin(p)  ((p < 8) ? (p) + 24 : -1)
 #define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5 || (p) == 21 || (p) == 22 || (p) == 23)
 
-static const uint8_t SS   = 9;
-static const uint8_t MOSI = 10;
-static const uint8_t MISO = 11;
-static const uint8_t SCK  = 12;
+#define SS              9
+#define MOSI            10
+#define MISO            11
+#define SCK             12
 
-static const uint8_t SCL = 15;
-static const uint8_t SDA = 16;
+#define SCL             15
+#define SDA             16
 
-static const uint8_t VCC_ENABLE = 17;
-static const uint8_t BATT_ALERT = 18;
-static const uint8_t BACKPACK_BUS = 19;
-static const uint8_t CHG_STATUS = 20;
-static const uint8_t LED_BLUE = 21;
-static const uint8_t LED_RED = 22;
-static const uint8_t LED_GREEN = 23;
-static const uint8_t LED_BUILTIN = 23;
-static const uint8_t LED = 23;
+#define VCC_ENABLE      17
+#define BATT_ALERT      18
+#define BACKPACK_BUS    19
+#define CHG_STATUS      20
+#define LED_BLUE        21
+#define LED_RED         22
+#define LED_GREEN       23
+#define LED_BUILTIN     23
+#define LED             23
 
-static const uint8_t A0 = 24;
-static const uint8_t A1 = 25;
-static const uint8_t A2 = 26;
-static const uint8_t A3 = 27;
-static const uint8_t A4 = 28;
-static const uint8_t A5 = 29;
-static const uint8_t A6 = 30;
-static const uint8_t A7 = 31;
+#define A0              24
+#define A1              25
+#define A2              26
+#define A3              27
+#define A4              28
+#define A5              29
+#define A6              30
+#define A7              31
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 24) ? (&PCICR) : ((uint8_t *)0))
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))

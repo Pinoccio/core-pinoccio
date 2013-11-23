@@ -18,8 +18,11 @@ pinoccio.bootloader.lock_bits=0x0F
 
 pinoccio.build.mcu=atmega256rfr2
 pinoccio.build.f_cpu=16000000L
-pinoccio.build.core=arduino
+pinoccio.build.core=arduino:arduino
 pinoccio.build.variant=pinoccio
+pinoccio.build.board=PINOCCIO
+# Workaround for https://github.com/arduino/Arduino/pull/1695
+pinoccio.build.extra_flags=-D__PROG_TYPES_COMPAT__
 
 ##############################################################
 pinoccio128.name=Pinoccio 128RFA1
@@ -41,5 +44,8 @@ pinoccio128.bootloader.lock_bits=0x0F
 
 pinoccio128.build.mcu=atmega128rfa1
 pinoccio128.build.f_cpu=16000000L
-pinoccio128.build.core=pinoccio
+pinoccio128.build.core=arduino:arduino
 pinoccio128.build.variant=pinoccio
+pinoccio.build.board=PINOCCIO
+# Workaround for https://github.com/arduino/Arduino/pull/1695
+pinoccio.build.extra_flags=-D__PROG_TYPES_COMPAT__

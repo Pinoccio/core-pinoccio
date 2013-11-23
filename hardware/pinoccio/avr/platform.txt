@@ -1,8 +1,9 @@
-
+# Pinoccio AVR Core and platform.
+name=Pinoccio AVR boards
+version=1.0.0
 # AVR compile variables
 # --------------------- 
 
-name=Arduino AVR Boards
 # Default "compiler.path" is correct, change only if you want to overidde the initial value
 #compiler.path={ide.path}/tools/avr/bin/..
 compiler.c.cmd=avr-gcc
@@ -27,10 +28,13 @@ build.extra_flags=
 # --------------------
 
 ## Compile c files
-recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Compile c++ files
-recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -D{software}={runtime.ide.version} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
+
+## Compile S files
+recipe.S.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.S.flags} -mmcu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {build.extra_flags} {includes} "{source_file}" -o "{object_file}"
 
 ## Create archives
 recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} "{build.path}/{archive_file}" "{object_file}"
@@ -45,12 +49,14 @@ recipe.objcopy.eep.pattern="{compiler.path}{compiler.objcopy.cmd}" {compiler.obj
 recipe.objcopy.hex.pattern="{compiler.path}{compiler.elf2hex.cmd}" {compiler.elf2hex.flags} "{build.path}/{build.project_name}.elf" "{build.path}/{build.project_name}.hex"
 
 ## Compute size
-recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.hex"
-recipe.size.regex=Total\s+([0-9]+).*
+recipe.size.pattern="{compiler.path}{compiler.size.cmd}" -A "{build.path}/{build.project_name}.elf"
+recipe.size.regex=^(?:\.text|\.data|\.bootloader)\s+([0-9]+).*
+recipe.size.regex.data=^(?:\.data|\.bss|\.noinit)\s+([0-9]+).*
+recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 
 
 # AVR Uploader/Programmers tools
-# -------------------
+# ------------------------------
 
 tools.avrdude.cmd.path={runtime.ide.path}/hardware/tools/avr/bin/avrdude
 tools.avrdude.config.path={runtime.ide.path}/hardware/tools/avr/etc/avrdude.conf
