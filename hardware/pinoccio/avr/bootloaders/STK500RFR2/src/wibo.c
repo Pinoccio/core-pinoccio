@@ -83,6 +83,7 @@
 #endif
 
 //#define NO_LEDS (1)
+#define PROGLED (2) // use the green one
 
 #if defined(_DEBUG_SERIAL_)
 #include <avr/interrupt.h>
@@ -223,7 +224,7 @@ void wibo_init(uint8_t channel, uint16_t pan_id, uint16_t short_addr, uint64_t i
 
 #if !defined(NO_LEDS)
 	LED_INIT();
-	LED_SET(0);
+	LED_SET(PROGLED);
 #endif
 
 	nodeconfig.channel=channel;
@@ -298,7 +299,7 @@ uint8_t wibo_run(void)
 
 	while(!isLeave) {
 #if !defined(NO_LEDS)
-		LED_CLR(0);
+		LED_CLR(PROGLED);
 #endif
 
 		while(0 == (trx_reg_read(RG_IRQ_STATUS) & TRX_IRQ_RX_END));
@@ -308,7 +309,7 @@ uint8_t wibo_run(void)
 				&tmp); /* dont use LQI, write into tmp variable */
 
 #if !defined(NO_LEDS)
-		LED_SET(0);
+		LED_SET(PROGLED);
 		/* light as long as actions are running */
 #endif
 
@@ -403,7 +404,7 @@ uint8_t wibo_run(void)
 					 *  because of possible voltage drops
 					 */
 #if !defined(NO_LEDS)
-					LED_CLR(0);
+					LED_CLR(PROGLED);
 #endif
 
 					if (target == 'F') /* Flash memory */
@@ -460,7 +461,7 @@ uint8_t wibo_run(void)
 			printf("Exit"EOL);
 #endif
 #if !defined(NO_LEDS)
-			LED_CLR(0);
+			LED_CLR(PROGLED);
 #endif
 			isLeave=1;
 			break;
