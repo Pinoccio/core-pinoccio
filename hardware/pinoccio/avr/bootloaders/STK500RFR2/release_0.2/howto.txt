@@ -4,8 +4,11 @@ python		http://www.python.org
 pyserial	http://pyserial.sf.net
 
 
-(1) Flash Wibohost Application to Pinoccio
- - radio configuration is fetched from EEPROM, it has to keep valid content
+(1) Flash Wibohost Application to Pinoccio (lead scout) connected via USB-serial
+ - command > avrdude -p atmega256rfr2 -c stk500v2 -P /dev/ttyACM0 -D -U flash:w:wibohost_pinoccio.hex:i
+ - "-D" option is important to avoid erasing bootloader!
+ - radio configuration is fetched from EEPROM, it has to keep valid content 
+ - to initialise EEPROM with channel/scout ID settings, compile a sketch first and download to board
  - Baudrate is 115200 kBaud
  
 Open serial terminal at Wibohost COM port (115200kBaud 8N1, no Handshake) and reset, you see something like this:
@@ -18,15 +21,9 @@ here we use channel 14, PAN_ID (Troop ID) 0x0022 and SHORT_ADDR 0x0002 (Scout ID
 If you can see this, Wibohost works fine and is configured correctly
 
 
-(2) Flash Bootloader (serial + Wibo)
- - serial bootloader should work from within Arduino IDE
- - radio configuration is fetched from EEPROM, it has to keep valid content
- - You can talk to bootloader wireless from Wibohost
- 
- 
-(3) Use the system
- - 1st try, no Python: use raw serial terminal
-    - open serial terminal at Wibohost COM port
+(2) Flash firmware to remote scout via OTA
+ - 1st try to verify Wibohost application running and remote scout connectivity
+    - open serial terminal at Wibohost COM port (using Arduino IDE)
 	- enter > ping {Scout ID}   (Scout ID 0..0xFFFF given in hex)
 	- if bootloader is configured correctly it replies:
 ------------------------------------------------------------
@@ -38,7 +35,8 @@ OK {'short_addr':0x0003, 'appname': 'wibo', 'boardname':'pinoccio', 'version':0x
 
  - 2nd try, use the python module wibohost.py to make use of full functionality
     - now you can flash complete hex-files by using command line parameters
-	- get help on arguments: >python wibohost.py -h
-	- ping Scout #3: >python wibohost.py -P {YOUR_COMPORT}:115200 -a {Scout ID} -c {Channel} -S
-	- flash hex-file to Scout #3: >python wibohost.py -P {YOUR_COMPORT}:115200 -a {Scout ID} -c {Channel} -J -u {HEXFILE}
-    - you can also flash a bunch of Scouts simultaneously by giving range of addresses and -U parameter: >python wibohost.py -P {YOUR_COMPORT}:115200 -a 3:10,15 -c {Channel} -J -U {HEXFILE}
+	- get help on arguments: > python wibohost.py -h
+	- ping Scout #3: > python wibohost.py -P {YOUR_COMPORT}:115200 -a {Scout ID} -c {Channel} -S
+	  command output is 'SCAN: [x]' where 'x' is the node(s) that replied to a ping
+	- flash hex-file to Scout #3: > python wibohost.py -P {YOUR_COMPORT}:115200 -a {Scout ID} -c {Channel} -J -u {HEXFILE}
+    - you can also flash a bunch of Scouts simultaneously by giving range of addresses and -U parameter: > python wibohost.py -P {YOUR_COMPORT}:115200 -a 3:10,15 -c {Channel} -J -U {HEXFILE}

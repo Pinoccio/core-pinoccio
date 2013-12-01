@@ -385,7 +385,7 @@ def process_command_line():
         wnwk.setPort(PORT)
         wnwk.setBaudrate(BAUDRATE)
         wnwk.open()
-        time.sleep(0.1) # some time for boot printout
+        time.sleep(6) # some time for boot printout
         for i in range(10):
             x = wnwk.echo("HalloWibo")
             if x["code"] == "OK":
