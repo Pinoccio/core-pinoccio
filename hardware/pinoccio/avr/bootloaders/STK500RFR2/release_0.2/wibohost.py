@@ -385,8 +385,14 @@ def process_command_line():
         wnwk.setPort(PORT)
         wnwk.setBaudrate(BAUDRATE)
         wnwk.open()
-        time.sleep(6) # some time for boot printout
-        for i in range(10):
+	
+	# The following 2 commands are added for compatibility with Arduino
+	# which resets when the COM port is opened.  Some settling time is required for the chip
+	# to start and then we sent the STK500v2 command for 'exit bootloader'	
+	time.sleep(0.1) # some time for RFR2 to stabilise after reset  
+	wnwk.write('\x1B\x18\x00\x03\x0E\x11\x01\x01\x1F') # Exit bootloader 
+        
+	for i in range(10):
             x = wnwk.echo("HalloWibo")
             if x["code"] == "OK":
                 break
