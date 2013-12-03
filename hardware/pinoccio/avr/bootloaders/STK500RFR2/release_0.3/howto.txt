@@ -5,7 +5,7 @@ pyserial	http://pyserial.sf.net
 
 
 (1) Flash Wibohost Application to Pinoccio (lead scout) connected via USB-serial
- - command > avrdude -p atmega256rfr2 -c stk500v2 -P /dev/ttyACM0 -D -U flash:w:wibohost_pinoccio.hex:i
+ - command > avrdude -p atmega256rfr2 -c stk500v2 -P {YOUR_COMPORT} -D -U flash:w:wibohost_pinoccio.hex:i
  - "-D" option is important to avoid erasing bootloader!
  - radio configuration is fetched from EEPROM, it has to keep valid content 
  - to initialise EEPROM with channel/scout ID settings, compile a sketch first and download to board
