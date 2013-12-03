@@ -101,6 +101,8 @@ LICENSE:
 //*	Issue 181: added watch dog timmer support
 //#define	_FIX_ISSUE_181_
 
+//* Provide support for WDT as a method of entering the bootloader
+#define _WDT_SUPPORT_NO_APPSTART_
 
 #include	<inttypes.h>
 #include	<avr/io.h>
@@ -611,6 +613,22 @@ int main(void)
 	//************************************************************************
 #endif
 
+#ifdef _WDT_SUPPORT_NO_APPSTART_
+	//************************************************************************
+	/* Dec 3, 2013  Add support for watchdog reset into bootloader for OTA
+	 * Clear WDT, but don't boot into the app as in FIX_ISSUE_181
+	 * WDT can be used to enter bootloader for OTA update
+	 */
+	uint8_t	mcuStatusReg;
+	mcuStatusReg	=	MCUSR;
+
+	__asm__ __volatile__ ("cli");
+	__asm__ __volatile__ ("wdr");
+	MCUSR	=	0;
+	WDTCSR	|=	_BV(WDCE) | _BV(WDE);
+	WDTCSR	=	0;
+	__asm__ __volatile__ ("sei");
+#endif
 
 	boot_timer	=	0;
 	boot_state	=	0;
