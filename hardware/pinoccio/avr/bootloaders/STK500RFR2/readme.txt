@@ -1,3 +1,4 @@
+This is the current bootloader for Pinoccio boards using the ATMega256RFR2 chip.  It includes uracoli for over-the-air (OTA) firmware updates.
 
 integrate uracoli into bootloader:
  (1) fetch uracoli-src package http://uracoli.nongnu.org/download.html
