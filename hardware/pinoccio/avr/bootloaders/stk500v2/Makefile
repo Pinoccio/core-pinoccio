@@ -215,7 +215,7 @@ AVRDUDE_PROGRAMMER = avrisp2
 AVRDUDE_PORT = usb    # programmer connected to serial device
 
 AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex
-AVRDUDE_WRITE_FUSES = -U lfuse:w:0xFF:m -U hfuse:w:0xD0:m -U efuse:w:0xFE:m
+AVRDUDE_WRITE_FUSES = -U lfuse:w:0xDE:m -U hfuse:w:0xD0:m -U efuse:w:0xDE:m
 #AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep
 
 
@@ -408,7 +408,8 @@ pinoccio:	begin gccversion sizebefore build sizeafter end
 pinoccio_program:	MCU = atmega256rfr2
 pinoccio_program:	F_CPU = 16000000
 pinoccio_program: $(TARGET).hex $(TARGET).eep
-	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM) $(AVRDUDE_WRITE_FUSES)
+	#$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM) $(AVRDUDE_WRITE_FUSES)
+	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH)
 
 # Default target.
 all: begin gccversion sizebefore build sizeafter end

@@ -482,6 +482,7 @@ if [ -n "$AVRDUDE_INSTALL" ]; then
     mkdir -p obj-avr &&
     cd obj-avr &&
     ../configure --disable-shared --enable-static --prefix=${PREFIX} &&
+    #../configure --prefix=${PREFIX} &&
     make -j8 &&
     make install
     if [ $? -gt 0 ]; then
