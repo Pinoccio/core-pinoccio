@@ -827,7 +827,14 @@ int main(void)
 							}
 							else if (msgBuffer[4] == 0x58)
 							{
-								answerByte	=	boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS);
+								if (msgBuffer[5] == 0x00)
+								{
+									answerByte	=	boot_lock_fuse_bits_get(GET_LOCK_BITS);
+								}
+								else
+								{
+									answerByte	=	boot_lock_fuse_bits_get(GET_HIGH_FUSE_BITS);
+								}
 							}
 							else
 							{
