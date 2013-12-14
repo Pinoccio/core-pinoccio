@@ -614,32 +614,35 @@ int main(void)
 #endif
 
 #ifdef _WDT_SUPPORT_NO_APPSTART_
-  //************************************************************************
-  /* Dec 3, 2013  Add support for watchdog reset into bootloader for OTA
-   * Clear WDT, but don't boot into the app as in FIX_ISSUE_181
-   * WDT can be used to enter bootloader for OTA update
-   */
-  uint8_t  mcuStatusReg;
-  mcuStatusReg  =  MCUSR;
+ //************************************************************************
+ /* Dec 3, 2013  Add support for watchdog reset into bootloader for OTA
+  * Clear WDT, but don't boot into the app as in FIX_ISSUE_181
+  * WDT can be used to enter bootloader for OTA update
+  */
+ uint8_t  mcuStatusReg;
+ mcuStatusReg  =  MCUSR;
 
-  __asm__ __volatile__ ("cli");
-  __asm__ __volatile__ ("wdr");
-  MCUSR  =  0;
-  WDTCSR  |=  _BV(WDCE) | _BV(WDE);
-  WDTCSR  =  0;
-  __asm__ __volatile__ ("sei");
-#endif
+ __asm__ __volatile__ ("cli");
+ __asm__ __volatile__ ("wdr");
+ MCUSR  =  0;
+ WDTCSR  |=  _BV(WDCE) | _BV(WDE);
+ WDTCSR  =  0;
+ __asm__ __volatile__ ("sei");
 
-  boot_timer  =  0;
-  boot_state  =  0;
-
-#ifdef BLINK_LED_WHILE_WAITING
-//  boot_timeout  =   90000;    //*  should be about 4 seconds
-//  boot_timeout  =  170000;
-  boot_timeout  =   100000;    //*  should be about 5 seconds
+ if (mcuStatusReg & _BV(WDRF))
+ {
+   boot_timeout  =   65000;    //*  should be about 5 seconds
+ }
+ else
+ {
+  boot_timeout  =   10000;    //*  short delay for serial
+ }
 #else
-  boot_timeout  =  3500000; // 7 seconds , approx 2us per step when optimize "s"
+ boot_timeout  =   65000;    //*  should be about 5 seconds
 #endif
+
+ boot_timer  =  0;
+ boot_state  =  0;
   /*
    * Branch to bootloader or application code ?
    */
