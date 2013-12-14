@@ -196,10 +196,10 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   // -------------------------------------------
   NOT_ON_TIMER  , // PE 0 ** D0  ** USART0_RX
   NOT_ON_TIMER  , // PE 1 ** D1  ** USART0_TX
-  TIMER0A       , // PB 7 ** D2  ** D2~
-  TIMER3A       , // PE 3 ** D3  ** D3~
-  TIMER3B       , // PE 4 ** D4  ** D4*~
-  TIMER3C       , // PE 5 ** D5  ** D5*~
+  TIMER0A       , // PB 7 ** D2  ** D2~ OC1C
+  TIMER3A       , // PE 3 ** D3  ** D3~ OC3A
+  TIMER3B       , // PE 4 ** D4  ** D4*~ OC3B
+  TIMER3C       , // PE 5 ** D5  ** D5*~ OC3C
   NOT_ON_TIMER  , // PE 2 ** D6  ** D6
   NOT_ON_TIMER  , // PE 6 ** D7  ** D7*
   NOT_ON_TIMER  , // PD 5 ** D8  ** D8
@@ -215,9 +215,9 @@ const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
   NOT_ON_TIMER  , // PE 7 ** D18 ** BATT_ALERT*
   NOT_ON_TIMER  , // PD 6 ** D19 ** BACKPACK_BUS
   NOT_ON_TIMER  , // PD 7 ** D20 ** CHG_STATUS
-  TIMER5A       , // PB 4 ** D21 ** LED_BLUE~
-  TIMER5B       , // PB 5 ** D22 ** LED_RED~
-  TIMER5C       , // PB 6 ** D23 ** LED_GREEN~
+  TIMER2A       , // PB 4 ** D21 ** LED_BLUE~ OC2A (TIMER5A)
+  TIMER1A       , // PB 5 ** D22 ** LED_RED~ OC1A (TIMER5B)
+  TIMER1B       , // PB 6 ** D23 ** LED_GREEN~ OC1B (TIMER5C)
   NOT_ON_TIMER  , // PF 0 ** D24 ** A0
   NOT_ON_TIMER  , // PF 1 ** D25 ** A1
   NOT_ON_TIMER  , // PF 2 ** D26 ** A2
