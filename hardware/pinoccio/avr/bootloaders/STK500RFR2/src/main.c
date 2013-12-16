@@ -1343,11 +1343,11 @@ int main(void)
   	TCCR2A = 0;
   	TCCR2B = 0;
 
-   #if defined(PROGLED_LOWACTIVE)
-	 PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
-   #else
-	 PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
-   #endif
+	#if defined(PROGLED_LOWACTIVE)
+	PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
+	#else
+	PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
+	#endif
   
   #endif
 
