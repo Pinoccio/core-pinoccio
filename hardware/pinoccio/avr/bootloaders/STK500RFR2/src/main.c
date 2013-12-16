@@ -135,6 +135,9 @@ LICENSE:
 //#define  _DEBUG_SERIAL_ (1)
 //#define  _DEBUG_WITH_LEDS_ (1)
 
+#if defined( _PINOCCIO_256RFR2_ )
+  #define FANCY_BOOTLOADER_LED		// fancy RGB LED with PWM (zOMG!!)
+#endif
 
 /*
  * Uncomment the following lines to save code space
@@ -144,14 +147,17 @@ LICENSE:
 //#define  REMOVE_CMD_SPI_MULTI        // disable processing of SPI_MULTI commands, Remark this line for AVRDUDE <Worapoht>
 //
 
-
-
 //************************************************************************
 //*  LED on pin "PROGLED_PIN" on port "PROGLED_PORT"
 //*  indicates that bootloader is active
 //*  PG2 -> LED on Wiring board
 //************************************************************************
 #define    BLINK_LED_WHILE_WAITING
+
+volatile unsigned char redLedVal;
+volatile unsigned char greenLedVal;
+volatile unsigned char blueLedVal;
+volatile unsigned char ledToggle = 0;
 
 #ifdef _MEGA_BOARD_
   #define PROGLED_PORT  PORTB
@@ -200,7 +206,9 @@ LICENSE:
 #elif defined( _PINOCCIO_256RFR2_ )
   #define PROGLED_PORT  PORTB
   #define PROGLED_DDR    DDRB
-  #define PROGLED_PIN    PINB6
+  #define PROGLED_RED    PINB5
+  #define PROGLED_GREEN  PINB6
+  #define PROGLED_BLUE	 PINB4
   #define PROGLED_LOWACTIVE (1)
   #define UART_BAUDRATE_DOUBLE_SPEED 1
 #elif defined( _BOARD_ROBOTX_ )
@@ -275,16 +283,7 @@ LICENSE:
 #define CONFIG_PARAM_SW_MAJOR      2
 #define CONFIG_PARAM_SW_MINOR      0x0A
 
-/*
- * Calculate the address where the bootloader starts from FLASHEND and BOOTSIZE
- * (adjust BOOTSIZE below and BOOTLOADER_ADDRESS in Makefile if you want to change the size of the bootloader)
- */
-//#define BOOTSIZE 1024
-#if FLASHEND > 0x0F000
-  #define BOOTSIZE 8192
-#else
-  #define BOOTSIZE 2048
-#endif
+#define BOOTSIZE 4096	// bootsize in words
 
 #define APP_END  (FLASHEND -(2*BOOTSIZE) + 1)
 
@@ -562,7 +561,13 @@ uint32_t count = 0;
 //*  for watch dog timer startup
 void (*app_start)(void) = 0x0000;
 
+#if defined ( FANCY_BOOTLOADER_LED )
 
+#define ledsOff() OCR1A = 0xFF; OCR1B = 0xFF; OCR2A = 0xFF;
+#define ledsOn() OCR1A = 0xFF - redLedVal; OCR1B = 0xFF - greenLedVal; OCR2A = 0xFF - blueLedVal;
+#define toggleLed() ledToggle = !ledToggle; if (ledToggle) { ledsOn(); } else { ledsOff(); }
+
+#endif
 //*****************************************************************************
 int main(void)
 {
@@ -648,12 +653,47 @@ int main(void)
    */
 
 #ifndef REMOVE_BOOTLOADER_LED
-  /* PROG_PIN pulled low, indicate with LED that bootloader is active */
-  PROGLED_DDR    |=  (1<<PROGLED_PIN);
-#if defined(PROGLED_LOWACTIVE)
-  PROGLED_PORT  |=  (1<<PROGLED_PIN);  // active high LED ON
-#else
-  PROGLED_PORT  &=  ~(1<<PROGLED_PIN);  // active low LED ON
+  #if defined( _PINOCCIO_256RFR2_ )
+    PROGLED_DDR    |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);
+    #if defined(PROGLED_LOWACTIVE)
+      PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active high LED ON
+    #else
+      PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active low LED ON
+	#endif
+	
+	#if defined ( FANCY_BOOTLOADER_LED )
+
+		TCCR1A |= _BV(COM1A1) | _BV(WGM10);
+		TCCR1B |= _BV(WGM12) | _BV(CS10);
+		TCCR1A |= _BV(COM1B1);
+		
+		TCCR2A |= _BV(COM2A1) | _BV(WGM21) | _BV(WGM20);
+		TCCR2B |= _BV(CS20);
+
+		redLedVal = eeprom_read_byte((uint8_t *)8127);
+		greenLedVal = eeprom_read_byte((uint8_t *)8128);
+		blueLedVal = eeprom_read_byte((uint8_t *)8129);
+
+		if (redLedVal == 0x00 && greenLedVal == 0x00 && blueLedVal == 0x00) {
+			 redLedVal = 0x00;
+			 greenLedVal = 0xFF;
+			 blueLedVal = 0x00;
+		}
+
+		OCR1A = 0xFF - redLedVal;
+		OCR1B = 0xFF - greenLedVal;
+		OCR2A = 0xFF - blueLedVal;
+
+	#endif
+	
+  #else
+    PROGLED_DDR    |=  (1<<PROGLED_PIN);
+    #if defined(PROGLED_LOWACTIVE)
+      PROGLED_PORT  |=  (1<<PROGLED_PIN);  // active high LED ON
+    #else
+      PROGLED_PORT  &=  ~(1<<PROGLED_PIN);  // active low LED ON
+	#endif
+  #endif
 #endif
 
 
@@ -665,7 +705,6 @@ int main(void)
   }
 #endif
 
-#endif
   /*
    * Init UART
    * set baudrate and enable USART receiver and transmiter without interrupts
@@ -726,8 +765,16 @@ int main(void)
 #ifdef BLINK_LED_WHILE_WAITING
       if ((boot_timer % _BLINK_LOOP_COUNT_) == 0)
       {
-        //*  toggle the LED
-        PROGLED_PORT  ^=  (1<<PROGLED_PIN);
+		#if defined( _PINOCCIO_256RFR2_ )
+		  #if !defined( FANCY_BOOTLOADER_LED )
+		    PROGLED_PORT ^= (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);
+		  #else
+		    toggleLed();
+		  #endif
+		#else
+          //*  toggle the LED
+          PROGLED_PORT  ^=  (1<<PROGLED_PIN);
+		#endif
       }
 #endif
 
@@ -737,12 +784,6 @@ int main(void)
     }
     boot_state++; // ( if boot_state=1 bootloader received byte from UART, enter bootloader mode)
   }
-
-#if defined(PROGLED_LOWACTIVE)
-  PROGLED_PORT  |=  (1<<PROGLED_PIN);  // active low LED Off
-#else
-  PROGLED_PORT  &=  ~(1<<PROGLED_PIN);  // active high LED Off
-#endif
 
   if (boot_state==1) // enter serial bootloader
   {
@@ -1204,13 +1245,36 @@ int main(void)
       seqNum++;
 
     #ifndef REMOVE_BOOTLOADER_LED
-      //*  <MLS>  toggle the LED
-      PROGLED_PORT  ^=  (1<<PROGLED_PIN);  // active high LED ON
+		#if defined( _PINOCCIO_256RFR2_ )
+		  #if !defined ( FANCY_BOOTLOADER_LED )
+		    PROGLED_PORT ^= (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);
+		  #else
+		    toggleLed();
+		  #endif
+		#else
+          //*  toggle the LED
+          PROGLED_PORT  ^=  (1<<PROGLED_PIN);
+		#endif
     #endif
 
     }
   } else if (boot_state == 2) { // wireless bootloader
-    wibo_run();
+	  #ifdef FANCY_BOOTLOADER_LED	// turn timers off
+  
+	  TCCR1A = 0;
+	  TCCR1B = 0;
+  
+	  TCCR2A = 0;
+	  TCCR2B = 0;
+
+	  #if defined(PROGLED_LOWACTIVE)
+		PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF	  
+	  #else
+		PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
+	  #endif
+	  #endif  
+	  
+	  wibo_run();
   }
 
 #ifdef _DEBUG_WITH_LEDS_
@@ -1244,15 +1308,23 @@ int main(void)
 
 
 #ifndef REMOVE_BOOTLOADER_LED
-  PROGLED_DDR    &=  ~(1<<PROGLED_PIN);  // set to default
-#if defined(PROGLED_LOWACTIVE)
-  PROGLED_PORT  &=  ~(1<<PROGLED_PIN);  // active high LED Off
-#else
-  PROGLED_PORT  |=  (1<<PROGLED_PIN);  // active low LED Off
+  #if defined( _PINOCCIO_256RFR2_ )
+    PROGLED_DDR    &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));
+    #if defined(PROGLED_LOWACTIVE)
+      PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
+    #else
+      PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
+    #endif
+  #else
+    PROGLED_DDR    &=  ~(1<<PROGLED_PIN);  // set to default
+    #if defined(PROGLED_LOWACTIVE)
+      PROGLED_PORT  &=  ~(1<<PROGLED_PIN);  // active high LED OFF
+    #else
+      PROGLED_PORT  |=  (1<<PROGLED_PIN);  // active low LED OFF
+    #endif
+  #endif
+  delay_ms(100);
 #endif
-  delay_ms(100);              // delay after exit
-#endif
-
 
   asm volatile ("nop");      // wait until port has changed
 
@@ -1263,6 +1335,21 @@ int main(void)
   UART_STATUS_REG  &=  0xfd;
   boot_rww_enable();        // enable application section
 
+  #ifdef FANCY_BOOTLOADER_LED	// turn timers and LED off
+  
+  	TCCR1A = 0;
+  	TCCR1B = 0;
+  		
+  	TCCR2A = 0;
+  	TCCR2B = 0;
+
+   #if defined(PROGLED_LOWACTIVE)
+	 PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
+   #else
+	 PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
+   #endif
+  
+  #endif
 
   asm volatile(
       "clr  r30    \n\t"

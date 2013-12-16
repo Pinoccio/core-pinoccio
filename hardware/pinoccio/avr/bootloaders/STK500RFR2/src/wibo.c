@@ -223,8 +223,8 @@ void wibo_init(uint8_t channel, uint16_t pan_id, uint16_t short_addr, uint64_t i
 #endif
 
 #if !defined(NO_LEDS)
-	LED_INIT();
-	LED_SET(PROGLED);
+LED_INIT();
+LED_SET(PROGLED);
 #endif
 
 	nodeconfig.channel=channel;
