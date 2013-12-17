@@ -636,14 +636,14 @@ int main(void)
 
  if (mcuStatusReg & _BV(WDRF))
  {
-   boot_timeout  =   65000;    //*  should be about 5 seconds
+   boot_timeout  =   35000;    //*  should be about 5 seconds
  }
  else
  {
   boot_timeout  =   10000;    //*  short delay for serial
  }
 #else
- boot_timeout  =   65000;    //*  should be about 5 seconds
+ boot_timeout  =   35000;    //*  should be about 5 seconds
 #endif
 
  boot_timer  =  0;
