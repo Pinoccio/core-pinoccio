@@ -35,7 +35,7 @@ There are a few pieces to the puzzle that need to fit together to make it all pl
 
 You should then be able to open one of the Pinoccio examples using Open->libraries->Pinoccio->[example] and compile it.  Make sure your Board is set to Pinoccio and the Port is set to your serial port.
 
-You need to "#include <SPI.h>" and "#include <Wire.h>" at the top of your sketch, since the Arduino IDE does not support libraries depending on other libraries yet.
+You need to `#include <SPI.h>` and `#include <Wire.h>` at the top of your sketch, since the Arduino IDE does not support libraries depending on other libraries yet.
 
 Toolchain
 =========
