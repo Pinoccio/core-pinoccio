@@ -5,10 +5,28 @@ Firmware files, including bootloaders and app hex files for the ATmega16U2 and t
 
 As of 8/25/2013, you *MUST* create your own toolchain (avr-gcc, avrdude, etc.) because the Atmega256RFR2 is a fairly new chip and Arduino binaries of these are from 2011 era.
 
+--------
+OPTION 1
+--------
+
+Download the pre-configured Pinoccio VM.  This is a 3.4GB torrent containing a VM template that
+can be imported into either Virtualbox or VMWare Workstation/Fusion.
+
+Magnet URI (current version is 0.9): 
+
+magnet:?xt=urn:btih:3A291BD6C4EC6C720B73D0625285692DF7F030A7
+
+See "Compiling sketches" later in this README for compiling sketches in the Arduino IDE
+
+--------
+OPTION 2
+--------
+
+Build the toolchain according to the instructions below:
+
+
 install-avr-gcc.sh (for OS X) will help you in grabbing and building the newest avr-gcc, avrdude, etc.
 install-avr-gcc-linux.sh has been tested on debian 6.x 'squeeze' and should also work on the current stable 7.x 'wheezy' (but also read below for ready-made Debian packages)
-
---
 
 There are a few pieces to the puzzle that need to fit together to make it all play nicely..
 
@@ -33,12 +51,10 @@ There are a few pieces to the puzzle that need to fit together to make it all pl
 
    This step is optional if you just want to run a minimal sketch on the Pinoccio, but it adds support for various peripherals.
 
-You should then be able to open one of the Pinoccio examples using Open->libraries->Pinoccio->[example] and compile it.  Make sure your Board is set to Pinoccio and the Port is set to your serial port.
-
-You need to `#include <SPI.h>` and `#include <Wire.h>` at the top of your sketch, since the Arduino IDE does not support libraries depending on other libraries yet.
-
+---------
 Toolchain
-=========
+---------
+
 For using the atmega256rfr2 target, recent and/or patched versions of
 the avr toolchain are needed. In particular:
 
@@ -60,11 +76,25 @@ easier if you replace the linux script's prefix with the one from the
 other script (for OS X).  Otherwise, redirect the symlinks manually
 (they're in pinoccio-arduino-library/examples/Shell/Default/build/core).
 
+---------------
 Debian / Ubuntu
 ---------------
+
 If you're on Debian or Ubuntu, you can just grab read-made debs:
  - Avrdude 6.0 is available from Debian jessie
  - bin-utils 2.23.1-1 is available from Debian jessie and includes the
    needed patches
  - avr-libc is [available from here](http://apt.stderr.nl/pool/main/a/avr-libc/).
  - gcc-avr is [available from here](http://apt.stderr.nl/pool/main/g/gcc-avr/).
+
+
+
+------------------
+Compiling Sketches
+------------------
+
+You should then be able to open one of the Pinoccio examples using Open->libraries->Pinoccio->[example] and compile it.  Make sure your Board is set to Pinoccio and the Port is set to your serial port.
+
+You need to `#include <SPI.h>` and `#include <Wire.h>` at the top of your sketch, since the Arduino IDE does not support libraries depending on other libraries yet.
+
+
