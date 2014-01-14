@@ -1122,20 +1122,19 @@ int main(void)
             if ( msgBuffer[0] == CMD_PROGRAM_FLASH_ISP )
             {
               // erase only main section (bootloader protection)
-              if (address + size <= APP_END )
+              if ((!(size % 2)) && (!(address % SPM_PAGESIZE)) && (size <= SPM_PAGESIZE) && (address + size <= APP_END))
               {
-				if (address % SPM_PAGESIZE == 0)
-				{
-					boot_page_erase(address);  // Perform page erase
-					boot_spm_busy_wait();    // Wait until the memory is erased.
-				}
-				
+				  
+				boot_page_erase(address);  // Perform page erase
+				boot_spm_busy_wait();    // Wait until the memory is erased.	
+								  
 				/* Write FLASH */
 				tempAddress = address;
 				do {
+					
 					lowByte    =  *p++;
 					highByte   =  *p++;
-
+					
 					data    =  (highByte << 8) | lowByte;
 					boot_page_fill(tempAddress,data);
 
@@ -1162,10 +1161,10 @@ int main(void)
 				uint16_t ii = address >> 1;
 				/* write EEPROM */
 				while (size) {
-				eeprom_write_byte((uint8_t*)ii, *p++);
-				address+=2;            // Select next EEPROM byte
-				ii++;
-				size--;
+					eeprom_write_byte((uint8_t*)ii, *p++);
+					address+=2;            // Select next EEPROM byte
+					ii++;
+					size--;
 				}
 				msgLength    =  2;
 				msgBuffer[1]  =  STATUS_CMD_OK;
