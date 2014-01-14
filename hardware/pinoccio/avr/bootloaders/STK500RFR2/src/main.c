@@ -572,7 +572,6 @@ void (*app_start)(void) = 0x0000;
 int main(void)
 {
   address_t    address      =  0;
-  address_t    eraseAddress  =  0;
   unsigned char  msgParseState;
   unsigned int  ii        =  0;
   unsigned char  checksum    =  0;
@@ -1096,7 +1095,6 @@ int main(void)
           break;
   #endif
         case CMD_CHIP_ERASE_ISP:
-          eraseAddress  =  0; // dthiele: should be removed, address is always given in actual message
           msgLength    =  2;
         //  msgBuffer[1]  =  STATUS_CMD_OK;
           msgBuffer[1]  =  STATUS_CMD_FAILED;  //*  isue 543, return FAILED instead of OK
@@ -1119,49 +1117,59 @@ int main(void)
             unsigned char  *p  =  msgBuffer+10;
             unsigned int  data;
             unsigned char  highByte, lowByte;
-            address_t    tempaddress  =  address;
-
-
+			address_t tempAddress;
+			
             if ( msgBuffer[0] == CMD_PROGRAM_FLASH_ISP )
             {
               // erase only main section (bootloader protection)
-              if (eraseAddress < APP_END )
+              if (address + size <= APP_END )
               {
-                boot_page_erase(eraseAddress);  // Perform page erase
-                boot_spm_busy_wait();    // Wait until the memory is erased.
-                eraseAddress += SPM_PAGESIZE;  // point to next page to be erase
+				if (address % SPM_PAGESIZE == 0)
+				{
+					boot_page_erase(address);  // Perform page erase
+					boot_spm_busy_wait();    // Wait until the memory is erased.
+				}
+				
+				/* Write FLASH */
+				tempAddress = address;
+				do {
+					lowByte    =  *p++;
+					highByte   =  *p++;
+
+					data    =  (highByte << 8) | lowByte;
+					boot_page_fill(tempAddress,data);
+
+					tempAddress  =  tempAddress + 2;  // Select next word in memory
+					size  -=  2;        // Reduce number of bytes to write by two
+				} while (size);          // Loop until all bytes written
+
+				boot_page_write(address);
+				boot_spm_busy_wait();
+				boot_rww_enable();        // Re-enable the RWW section
+				
+				msgLength    =  2;
+				msgBuffer[1]  =  STATUS_CMD_OK;				
               }
-
-              /* Write FLASH */
-              do {
-                lowByte    =  *p++;
-                highByte   =  *p++;
-
-                data    =  (highByte << 8) | lowByte;
-                boot_page_fill(address,data);
-
-                address  =  address + 2;  // Select next word in memory
-                size  -=  2;        // Reduce number of bytes to write by two
-              } while (size);          // Loop until all bytes written
-
-              boot_page_write(tempaddress);
-              boot_spm_busy_wait();
-              boot_rww_enable();        // Re-enable the RWW section
+			  else
+			  {
+				msgLength    =  2;
+				msgBuffer[1]  =  STATUS_CMD_FAILED;
+			  }
             }
             else
             {
-              //*  issue 543, this should work, It has not been tested.
-              uint16_t ii = address >> 1;
-              /* write EEPROM */
-              while (size) {
-                eeprom_write_byte((uint8_t*)ii, *p++);
-                address+=2;            // Select next EEPROM byte
-                ii++;
-                size--;
-              }
+				//*  issue 543, this should work, It has not been tested.
+				uint16_t ii = address >> 1;
+				/* write EEPROM */
+				while (size) {
+				eeprom_write_byte((uint8_t*)ii, *p++);
+				address+=2;            // Select next EEPROM byte
+				ii++;
+				size--;
+				}
+				msgLength    =  2;
+				msgBuffer[1]  =  STATUS_CMD_OK;
             }
-            msgLength    =  2;
-            msgBuffer[1]  =  STATUS_CMD_OK;
           }
           break;
 
