@@ -22,6 +22,33 @@ See "Compiling sketches" later in this README for compiling sketches in the Ardu
 OPTION 2
 --------
 
+MAC OS X ONLY:
+
+You can download the latest Pinoccio IDE, along with the current toolchain support here:
+
+https://dl.dropboxusercontent.com/u/71493470/Pinoccio-1.5.5.zip
+
+1) Download the above archive, double-click it and place the resulting *Pinoccio.app* into your /Applications folder.
+
+2) Git clone the pinoccio-firmware repository 'git clone https://github.com/Pinoccio/pinoccio-firmware.git'.  Link the hardware folder from the pinoccio-firmware repo into the Arduino IDE:
+
+    ln -s pinoccio-firmware/hardware ~/Documents/Arduino/hardware
+    
+3) Install Pinoccio support into the Pinoccio IDE. 
+
+    git clone https://github.com/Pinoccio/pinoccio-arduino-library.git ~/Documents/Arduino/libraries/Pinoccio
+
+   This step is optional if you just want to run a minimal sketch on the Pinoccio, but it adds support for various peripherals.
+   
+4) Start the Pinoccio IDE, plug in a Scout.  Choose *Pinoccio* under the *Boards* menu, choose the proper port your Scout is attached to, and then open the *File -> Examples -> Pinoccio -> Begin* sketch, and hit upload.  
+
+5) Once completed, open your serial monitor, making sure the baud rate is set to 115200 and line ending is set to *newline*.  Now you can interact with the Scout directly!  Try typing in *led.red* and hitting enter.  Now *led.off*.  Boom!
+
+
+--------
+OPTION 3
+--------
+
 Build the toolchain according to the instructions below:
 
 
