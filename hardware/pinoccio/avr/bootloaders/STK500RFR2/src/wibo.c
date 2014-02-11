@@ -67,6 +67,7 @@
 #include <avr/boot.h>
 #include <avr/pgmspace.h>
 #include <util/crc16.h>
+#include <util/delay.h>
 #include <string.h>
 
 /* uracoli inclusions */
@@ -84,6 +85,8 @@
 
 //#define NO_LEDS (1)
 #define PROGLED (2) // use the green one
+
+#define WIBO_TIMEOUT 10000	// timeout in milliseconds to exit Wibo
 
 #if defined(_DEBUG_SERIAL_)
 #include <avr/interrupt.h>
@@ -296,13 +299,28 @@ uint8_t wibo_available(void)
 uint8_t wibo_run(void)
 {
 	uint8_t isLeave=0;
-
+	uint8_t isStay=0;
+	unsigned long timeout = WIBO_TIMEOUT;
+	
 	while(!isLeave) {
 #if !defined(NO_LEDS)
 		LED_CLR(PROGLED);
 #endif
+		if (!(isStay))
+		{
+			while(!(wibo_available()) && (timeout--))  _delay_ms(1);	// minimum frame time @ 250kbps ~ 2ms.
+		
+			if (!(wibo_available()))	// no packets received, bye bye!
+			{
+				isLeave=1;
+				return isLeave;
+			}			
+		}
+		else
+		{
+			while(!(wibo_available()));	// wait for next packet
+		}
 
-		while(0 == (trx_reg_read(RG_IRQ_STATUS) & TRX_IRQ_RX_END));
 		trx_reg_write(RG_IRQ_STATUS, TRX_IRQ_RX_END); /* clear the flag */
 
 		trx_frame_read(rxbuf.data, sizeof(rxbuf.data) / sizeof(rxbuf.data[0]),
@@ -317,6 +335,7 @@ uint8_t wibo_run(void)
 		{
 
 		case P2P_PING_REQ:
+			isStay=1;
 			if (0 == deaf)
 			{
 				pingrep.hdr.dst = rxbuf.hdr.src;
@@ -351,6 +370,7 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_TARGET:
+			isStay=1;
 			target = rxbuf.wibo_target.targmem;
 #if defined(_DEBUG_SERIAL_)
 			printf("Set Target to %c"EOL, target);
@@ -358,6 +378,7 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_RESET:
+			isStay=1;
 #if defined(_DEBUG_SERIAL_)
 			printf("Reset"EOL);
 #endif
@@ -376,6 +397,7 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_ADDR:
+			isStay=1;
 #if defined(_DEBUG_SERIAL_)
 			printf("Set address: 0x%08lX"EOL, rxbuf.wibo_addr.address);
 #endif
@@ -384,6 +406,7 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_DATA:
+			isStay=1;
 #if defined(_DEBUG_SERIAL_)
 			printf("Data[%d]", rxbuf.wibo_data.dsize);
 			for(uint8_t j=0;j<rxbuf.wibo_data.dsize;j++)
@@ -428,12 +451,14 @@ uint8_t wibo_run(void)
 			} while (--tmp);
 			break;
 #if defined(WIBO_FLAVOUR_BOOTLUP)
-			case P2P_WIBO_BOOTLUP:
+		case P2P_WIBO_BOOTLUP:
+			isStay=1;
 			bootlup();
-			break;
+		break;
 #endif
 
 		case P2P_WIBO_FINISH:
+			isStay=1;
 #if defined(_DEBUG_SERIAL_)
 			printf("Finish"EOL);
 #endif
@@ -467,10 +492,16 @@ uint8_t wibo_run(void)
 			break;
 
 		case P2P_WIBO_DEAF:
+			isStay=1;
 			deaf = 1;
 			break;
 		default:
 			/* unknown or unhandled command */
+			if (!(isStay)) {
+				if (!(timeout--)) {
+					isLeave = 1;
+				}
+			}
 			break;
 		}; /* switch (rxbuf.hdr.cmd) */
 	}
