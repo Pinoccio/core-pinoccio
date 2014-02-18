@@ -547,6 +547,7 @@ int main(void)
   unsigned char  msgBuffer[285];
   unsigned char  c, *p;
   unsigned char   isLeave = 0;
+  unsigned char   isTimeout = 0;
   unsigned char  wdtReset = 0;
   unsigned char badMessage = 0;
   unsigned long  boot_timeout;
@@ -569,10 +570,12 @@ int main(void)
  /* Feb 11, 2014  Use WDT to enter OTA bootloader section
   * Do not clear WDT status flag, leave that for the main app
   */
+ GPIOR0 = MCUSR;	// store status register in GPIOR0 to provide feedback on reset reason to main app
  
- if (MCUSR & _BV(WDRF))
+ if (GPIOR0 & _BV(WDRF) && (!(eeprom_read_byte((uint8_t *)8125))))	// If we watchdogged and have an OTA request pending, fly the flag
  {
 	 wdtReset = 1;
+	 eeprom_write_byte((uint8_t *)8125, 0xFF);	// clear OTA request
  }
 
  // make sure watchdog is off!
@@ -672,6 +675,7 @@ int main(void)
 	  boot_state=0;
 	  boot_timer=0;
 	  isLeave=0;
+	  isTimeout=0;
 	  
 	  while (boot_state==0)
 	  {
@@ -681,6 +685,7 @@ int main(void)
 		  boot_timer++;
 		  if (boot_timer > boot_timeout)
 		  {
+			  isTimeout = 1;
 			boot_state  =  1; // get us out, this is incremented to 2 below
 		  }
 	#ifdef BLINK_LED_WHILE_WAITING
@@ -705,13 +710,13 @@ int main(void)
 	  if (boot_state==1) // enter serial bootloader
 	  {
 		//*  main loop
-		while (!isLeave)
+		while ((!isLeave) && (!isTimeout))
 		{
 		  /*
 		   * Collect received bytes to a complete message
 		   */
 		  msgParseState  =  ST_START;
-		  while ((msgParseState != ST_PROCESS) && (!(isLeave)))
+		  while ((msgParseState != ST_PROCESS) && (!isLeave) && (!isTimeout))
 		  {
 			if (boot_state==1)
 			{
@@ -721,7 +726,7 @@ int main(void)
 			else
 			{
 			//  c  =  recchar();
-			  c  =  recchar_timeout(&isLeave);
+			  c  =  recchar_timeout(&isTimeout);
 			}
 
 		  #ifdef ENABLE_MONITOR
@@ -755,7 +760,7 @@ int main(void)
 				}
 				else
 				{
-					if (badMessage++ > 5) { isLeave = 1; }
+					if (badMessage++ > 5) { isTimeout = 1; }	// isLeave is now a forced boot to main app
 				}
 				break;
 
@@ -1194,19 +1199,19 @@ int main(void)
 	  
 		 if (wdtReset) {
 
-			  #ifdef FANCY_BOOTLOADER_LED	// turn timers off
-		  
-			  TCCR1A = 0;
-			  TCCR1B = 0;
-		  
-			  TCCR2A = 0;
-			  TCCR2B = 0;
+			  #ifdef FANCY_BOOTLOADER_LED	// turn PWM off in preparation for wibo.  leave port directions configured.
 
-			  #if defined(PROGLED_LOWACTIVE)
-			  PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
-			  #else
-			  PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
-			  #endif
+				  TCCR1A = 0;
+				  TCCR1B = 0;
+		  
+				  TCCR2A = 0;
+				  TCCR2B = 0;
+
+				  #if defined(PROGLED_LOWACTIVE)
+					PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
+				  #else
+					PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
+				  #endif
 			  #endif
 
 			  /* decide here where to fetch IEEE 802.15.4 comm parameters */
@@ -1233,84 +1238,87 @@ int main(void)
 
 	  }
 
+		boot_rww_enable();        // enable application section so we can read from it
+		
 		unsigned int  data;
 		#if (FLASHEND > 0x10000)
 		  data  =  pgm_read_word_far(0);  //*  get the first word of the user program
 		#else
 		  data  =  pgm_read_word_near(0);  //*  get the first word of the user program
 		#endif
-		  if (data != 0xffff)          //*  make sure its valid before jumping to it.
+
+		  if ((isLeave) || (isTimeout && (data != 0xffff)))          //*  require valid flash address on timeout
 		  {
 
-			#ifdef _DEBUG_SERIAL_
-			  sendchar('j');
-			//  sendchar('u');
-			//  sendchar('m');
-			//  sendchar('p');
-			//  sendchar(' ');
-			//  sendchar('u');
-			//  sendchar('s');
-			//  sendchar('r');
-			  sendchar(0x0d);
-			  sendchar(0x0a);
+				#ifdef _DEBUG_SERIAL_
+				  sendchar('j');
+				//  sendchar('u');
+				//  sendchar('m');
+				//  sendchar('p');
+				//  sendchar(' ');
+				//  sendchar('u');
+				//  sendchar('s');
+				//  sendchar('r');
+				  sendchar(0x0d);
+				  sendchar(0x0a);
 
-			  _delay_ms(100);
-			#endif
-
-
-			#ifndef REMOVE_BOOTLOADER_LED
-			  #if defined( _PINOCCIO_256RFR2_ )
-				PROGLED_DDR    &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));
-				#if defined(PROGLED_LOWACTIVE)
-				  PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
-				#else
-				  PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
+				  _delay_ms(100);
 				#endif
-			  #else
-				PROGLED_DDR    &=  ~(1<<PROGLED_PIN);  // set to default
-				#if defined(PROGLED_LOWACTIVE)
-				  PROGLED_PORT  &=  ~(1<<PROGLED_PIN);  // active high LED OFF
-				#else
-				  PROGLED_PORT  |=  (1<<PROGLED_PIN);  // active low LED OFF
+
+
+				#ifndef REMOVE_BOOTLOADER_LED
+					#if defined( _PINOCCIO_256RFR2_ )
+						PROGLED_DDR    &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));
+						#if defined(PROGLED_LOWACTIVE)
+							PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED ON
+						#else
+							PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED ON
+						#endif
+
+						#if defined ( FANCY_BOOTLOADER_LED )
+
+							TCCR1A = 0;
+							TCCR1B = 0;
+
+							TCCR2A = 0;
+							TCCR2B = 0;
+						#endif
+					#else
+						PROGLED_DDR    &=  ~(1<<PROGLED_PIN);
+						#if defined(PROGLED_LOWACTIVE)
+							PROGLED_PORT  &=  ~(1<<PROGLED_PIN);  // active high LED ON
+						#else
+							PROGLED_PORT  |=  (1<<PROGLED_PIN);  // active low LED ON
+						#endif
+					#endif
 				#endif
-			  #endif
-			  _delay_ms(100);
-			#endif
 
-			  asm volatile ("nop");      // wait until port has changed
+				  asm volatile ("nop");      // wait until port has changed
 
-			  /*
-			   * Now leave bootloader
-			   */
+				  /*
+				   * Now leave bootloader
+				   */
 
-			  UART_STATUS_REG  &=  0xfd;
-			  boot_rww_enable();        // enable application section
+				  UART_STATUS_REG  &=  0xfd;
 
-			  #ifdef FANCY_BOOTLOADER_LED	// turn timers and LED off
+				  #ifdef FANCY_BOOTLOADER_LED	// turn timers and LED off
   
-  				TCCR1A = 0;
-  				TCCR1B = 0;
+  					TCCR1A = 0;
+  					TCCR1B = 0;
   		
-  				TCCR2A = 0;
-  				TCCR2B = 0;
+  					TCCR2A = 0;
+  					TCCR2B = 0;
 
-				#if defined(PROGLED_LOWACTIVE)
-				PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
-				#else
-				PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
-				#endif
+					#if defined(PROGLED_LOWACTIVE)
+					PROGLED_PORT  |=  (1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE);  // active low LED OFF
+					#else
+					PROGLED_PORT  &=  ~((1<<PROGLED_RED)|(1<<PROGLED_GREEN)|(1<<PROGLED_BLUE));  // active high LED OFF
+					#endif
   
-			  #endif
+				  #endif
 
-
-        asm volatile(
-            "clr  r30    \n\t"
-            "clr  r31    \n\t"
-            "ijmp  \n\t"
-            );
-      }
-
-
+			asm("jmp 0000");
+		}
 	}
 }
 
