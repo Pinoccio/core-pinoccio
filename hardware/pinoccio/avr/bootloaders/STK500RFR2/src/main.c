@@ -672,11 +672,16 @@ int main(void)
 #endif
 
 	for(;;) {
-	  boot_state=0;
-	  boot_timer=0;
-	  isLeave=0;
-	  isTimeout=0;
-	  
+		if (wdtReset) {
+		  boot_state=2;	// skip serial part
+		  isTimeout=1;
+		}
+		else {
+		  boot_state=0;
+		  boot_timer=0;
+		  isLeave=0;
+		  isTimeout=0;
+		}
 	  while (boot_state==0)
 	  {
 		while ((!(Serial_Available())) && (boot_state == 0))    // wait for data
