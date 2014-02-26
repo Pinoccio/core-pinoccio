@@ -47,5 +47,3 @@ pinoccio128.build.f_cpu=16000000L
 pinoccio128.build.core=arduino:arduino
 pinoccio128.build.variant=pinoccio
 pinoccio128.build.board=PINOCCIO
-# Workaround for https://github.com/arduino/Arduino/pull/1695
-pinoccio.build.extra_flags=-D__PROG_TYPES_COMPAT__
