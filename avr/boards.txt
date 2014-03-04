@@ -1,0 +1,43 @@
+menu.cpu=Processor
+
+##############################################################
+pinoccio.name=Pinoccio Scout
+pinoccio.cpu=atmega256rfr2
+
+pinoccio.upload.tool=avrdude
+pinoccio.upload.protocol=stk500v2
+
+pinoccio.bootloader.tool=avrdude
+
+pinoccio.build.f_cpu=16000000L
+pinoccio.build.core=arduino:arduino
+pinoccio.build.variant=pinoccio
+pinoccio.build.board=PINOCCIO
+# Workaround for https://github.com/arduino/Arduino/pull/1695
+pinoccio.build.extra_flags=-D__PROG_TYPES_COMPAT__
+
+pinoccio.menu.cpu.atmega256rfr2=ATmega256RFR2
+pinoccio.menu.cpu.atmega256rfr2.build.mcu=atmega256rfr2
+pinoccio.menu.cpu.atmega256rfr2.upload.maximum_size=253952
+pinoccio.menu.cpu.atmega256rfr2.upload.speed=115200
+pinoccio.menu.cpu.atmega256rfr2.bootloader.low_fuses=0xFF
+pinoccio.menu.cpu.atmega256rfr2.bootloader.high_fuses=0xD0
+pinoccio.menu.cpu.atmega256rfr2.bootloader.extended_fuses=0xFE
+pinoccio.menu.cpu.atmega256rfr2.bootloader.unlock_bits=0x3F
+pinoccio.menu.cpu.atmega256rfr2.bootloader.lock_bits=0x0F
+pinoccio.menu.cpu.atmega256rfr2.bootloader.path=stk500v2
+pinoccio.menu.cpu.atmega256rfr2.bootloader.file=stk500boot_v2_pinoccio.hex
+
+pinoccio.menu.cpu.atmega128rfa1=ATmega128RFA1 (early prototype)
+pinoccio.menu.cpu.atmega128rfa1.build.mcu=atmega128rfa1
+pinoccio.menu.cpu.atmega128rfa1.upload.maximum_size=129048
+pinoccio.menu.cpu.atmega128rfa1.upload.speed=57600
+pinoccio.menu.cpu.atmega128rfa1.bootloader.low_fuses=0xF7
+pinoccio.menu.cpu.atmega128rfa1.bootloader.high_fuses=0xD0
+pinoccio.menu.cpu.atmega128rfa1.bootloader.extended_fuses=0xF0
+pinoccio.menu.cpu.atmega128rfa1.bootloader.path=pinoccio
+pinoccio.menu.cpu.atmega128rfa1.bootloader.file=ATmegaBOOT_atmega128rfa1.hex
+pinoccio.menu.cpu.atmega128rfa1.bootloader.unlock_bits=0x3F
+pinoccio.menu.cpu.atmega128rfa1.bootloader.lock_bits=0x0F
+
+##############################################################
