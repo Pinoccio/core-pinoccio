@@ -5,7 +5,7 @@ pinoccio.name=Pinoccio Scout
 pinoccio.cpu=atmega256rfr2
 
 pinoccio.upload.tool=avrdude
-pinoccio.upload.protocol=stk500v2
+pinoccio.upload.protocol=wiring
 
 pinoccio.bootloader.tool=avrdude
 
