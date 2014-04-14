@@ -25,8 +25,7 @@ pinoccio.menu.cpu.atmega256rfr2.bootloader.high_fuses=0xD0
 pinoccio.menu.cpu.atmega256rfr2.bootloader.extended_fuses=0xFE
 pinoccio.menu.cpu.atmega256rfr2.bootloader.unlock_bits=0x3F
 pinoccio.menu.cpu.atmega256rfr2.bootloader.lock_bits=0x2F
-pinoccio.menu.cpu.atmega256rfr2.bootloader.path=stk500v2
-pinoccio.menu.cpu.atmega256rfr2.bootloader.file=stk500boot_v2_pinoccio.hex
+pinoccio.menu.cpu.atmega256rfr2.bootloader.file=STK500RFR2/release_0.51/boot_pinoccio.hex
 
 pinoccio.menu.cpu.atmega128rfa1=ATmega128RFA1 (early prototype)
 pinoccio.menu.cpu.atmega128rfa1.build.mcu=atmega128rfa1
