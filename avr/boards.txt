@@ -4,10 +4,10 @@ menu.cpu=Processor
 pinoccio.name=Pinoccio Scout
 pinoccio.cpu=atmega256rfr2
 
-pinoccio.upload.tool=avrdude
+pinoccio.upload.tool=arduino:avrdude
 pinoccio.upload.protocol=wiring
 
-pinoccio.bootloader.tool=avrdude
+pinoccio.bootloader.tool=arduino:avrdude
 
 pinoccio.build.f_cpu=16000000L
 pinoccio.build.core=arduino:arduino
