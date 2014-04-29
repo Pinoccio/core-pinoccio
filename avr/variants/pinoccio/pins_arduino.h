@@ -59,6 +59,50 @@
 #define A6              30
 #define A7              31
 
+// ~: PWM, *: external interrupt
+// Pin num   Pin functions     Connected to / label on board
+// D0:  PE0  RXD0/PCINT8       RX0 (Connected to 16u2 USB chip)
+// D1:  PE1  TXD0              TX0 (Connected to 16u2 USB chip)
+// D2:  PB7  OC0A/OC1C/PCINT7  D2~
+// D3:  PE3  AIN1/OC3A         D3~
+// D4:  PE4  INT4/OC3B         D4*~
+// D5:  PE5  INT5/OC3C         D5*~
+// D6:  PE2  AIN0/XCK0         D6
+// D7:  PE6  INT6/T3           D7*
+// D8:  PD5  XCK1              D8
+// D9:  PB0  SS/PCINT0         SS
+// D10: PB2  MOSI/PDI/PCINT2   MOSI
+// D11: PB3  MISO/PDO/PCINT3   MISO
+// D12: PB1  SCK/PCINT1        SCK
+// D13: PD2  INT2/RXD1         RX1*
+// D14: PD3  INT3/TXD1         TX1*
+// D15: PD0  INT0/SCL          SCL*
+// D16: PD1  INT1/SDA          SDA*
+// D17: PD4  ICP1              VCC_ENABLE (Controls 3V3 pin)
+// D18: PE7  INT7/ICP3/CLK0    BATT_ALERT* (Connected to charge controller)
+// D19: PD6  T1                BACKPACK_BUS
+// D20: PD7  T0                CHG_STATUS (Connected to charge controller)
+// D21: PB4  OC2A/PCINT4       LED_BLUE~ (On-board RGB led)
+// D22: PB5  OC1A/PCINT5       LED_RED~ (On-board RGB led)
+// D23: PB6  OC1B/PCINT6       LED_GREEN~  (On-board RGB led)
+// D24: PF0  ADC0              A0
+// D25: PF1  ADC1              A1
+// D26: PF2  ADC2/DIG2         A2
+// D27: PF3  ADC3/DIG4         A3
+// D28: PF4  ADC4/TCK          A4
+// D29: PF5  ADC5/TMS          A5
+// D30: PF6  ADC6/TDO          A6
+// D31: PF7  ADC7/TDI          A7
+//
+// These pins are not connected / don't have a pin
+// number:
+// PG5 OC0B
+// PG4 TOSC1 (Connected to RTC Xtal 32.768Khz)
+// PG3 TOSC2 (Connected to RTC Xtal 32.768Khz)
+// PG2 AMR
+// PG1 DIG1
+// PG0 DIG3
+
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 24) ? (&PCICR) : ((uint8_t *)0))
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
 #define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 13) ? (&PCMSK0) : (((p) <= 24) ? (&PCMSK1) : ((uint8_t *)0))))
@@ -115,117 +159,108 @@ const uint16_t PROGMEM port_to_input_PGM[] = {
 };
 
 const uint8_t PROGMEM digital_pin_to_port_PGM[] = {
-  // PORTLIST
-  // ~: PWM, *: external interrupt
-  // -------------------------------------------
-  PE  , // PE 0 ** D0  ** USART0_RX
-  PE  , // PE 1 ** D1  ** USART0_TX
-  PB  , // PB 7 ** D2  ** D2~
-  PE  , // PE 3 ** D3  ** D3~
-  PE  , // PE 4 ** D4  ** D4*~
-  PE  , // PE 5 ** D5  ** D5*~
-  PE  , // PE 2 ** D6  ** D6
-  PE  , // PE 6 ** D7  ** D7*
-  PD  , // PD 5 ** D8  ** D8
-  PB  , // PB 0 ** D9  ** SPI_SSN
-  PB  , // PB 2 ** D10 ** SPI_MOSI
-  PB  , // PB 3 ** D11 ** SPI_MISO
-  PB  , // PB 1 ** D12 ** SPI_SCK
-  PD  , // PD 2 ** D13 ** USART1_RX*
-  PD  , // PD 3 ** D14 ** USART1_TX*
-  PD  , // PD 0 ** D15 ** I2C_SCL*
-  PD  , // PD 1 ** D16 ** I2C_SDA*
-  PD  , // PD 4 ** D17 ** VCC_ENABLE
-  PE  , // PE 7 ** D18 ** BATT_ALERT*
-  PD  , // PD 6 ** D19 ** BACKPACK_BUS
-  PD  , // PD 7 ** D20 ** CHG_STATUS
-  PB  , // PB 4 ** D21 ** LED_BLUE~
-  PB  , // PB 5 ** D22 ** LED_RED~
-  PB  , // PB 6 ** D23 ** LED_GREEN~
-  PF  , // PF 0 ** D24 ** A0
-  PF  , // PF 1 ** D25 ** A1
-  PF  , // PF 2 ** D26 ** A2
-  PF  , // PF 3 ** D27 ** A3
-  PF  , // PF 4 ** D28 ** A4
-  PF  , // PF 5 ** D29 ** A5
-  PF  , // PF 6 ** D30 ** A6
-  PF  , // PF 7 ** D31 ** A7
+  /*  D0: */ PE,
+  /*  D1: */ PE,
+  /*  D2: */ PB,
+  /*  D3: */ PE,
+  /*  D4: */ PE,
+  /*  D5: */ PE,
+  /*  D6: */ PE,
+  /*  D7: */ PE,
+  /*  D8: */ PD,
+  /*  D9: */ PB,
+  /* D10: */ PB,
+  /* D11: */ PB,
+  /* D12: */ PB,
+  /* D13: */ PD,
+  /* D14: */ PD,
+  /* D15: */ PD,
+  /* D16: */ PD,
+  /* D17: */ PD,
+  /* D18: */ PE,
+  /* D19: */ PD,
+  /* D20: */ PD,
+  /* D21: */ PB,
+  /* D22: */ PB,
+  /* D23: */ PB,
+  /* D24: */ PF,
+  /* D25: */ PF,
+  /* D26: */ PF,
+  /* D27: */ PF,
+  /* D28: */ PF,
+  /* D29: */ PF,
+  /* D30: */ PF,
+  /* D31: */ PF,
 };
 
 const uint8_t PROGMEM digital_pin_to_bit_mask_PGM[] = {
-  // PIN IN PORT
-  // ~: PWM, *: external interrupt
-  // -------------------------------------------
-  _BV(PE0)  , // PE 0 ** D0  ** USART0_RX
-  _BV(PE1)  , // PE 1 ** D1  ** USART0_TX
-  _BV(PB7)  , // PB 7 ** D2  ** D2~
-  _BV(PE3)  , // PE 3 ** D3  ** D3~
-  _BV(PE4)  , // PE 4 ** D4  ** D4*~
-  _BV(PE5)  , // PE 5 ** D5  ** D5*~
-  _BV(PE2)  , // PE 2 ** D6  ** D6
-  _BV(PE6)  , // PE 6 ** D7  ** D7*
-  _BV(PD5)  , // PD 5 ** D8  ** D8
-  _BV(PB0)  , // PB 0 ** D9  ** SPI_SSN
-  _BV(PB2)  , // PB 2 ** D10 ** SPI_MOSI
-  _BV(PB3)  , // PB 3 ** D11 ** SPI_MISO
-  _BV(PB1)  , // PB 1 ** D12 ** SPI_SCK
-  _BV(PD2)  , // PD 2 ** D13 ** USART1_RX*
-  _BV(PD3)  , // PD 3 ** D14 ** USART1_TX*
-  _BV(PD0)  , // PD 0 ** D15 ** I2C_SCL*
-  _BV(PD1)  , // PD 1 ** D16 ** I2C_SDA*
-  _BV(PD4)  , // PD 4 ** D17 ** VCC_ENABLE
-  _BV(PE7)  , // PE 7 ** D18 ** BATT_ALERT*
-  _BV(PD6)  , // PD 6 ** D19 ** BACKPACK_BUS
-  _BV(PD7)  , // PD 7 ** D20 ** CHG_STATUS
-  _BV(PB4)  , // PB 4 ** D21 ** LED_BLUE~
-  _BV(PB5)  , // PB 5 ** D22 ** LED_RED~
-  _BV(PB6)  , // PB 6 ** D23 ** LED_GREEN~
-  _BV(PF0)  , // PF 0 ** D24 ** A0
-  _BV(PF1)  , // PF 1 ** D25 ** A1
-  _BV(PF2)  , // PF 2 ** D26 ** A2
-  _BV(PF3)  , // PF 3 ** D27 ** A3
-  _BV(PF4)  , // PF 4 ** D28 ** A4
-  _BV(PF5)  , // PF 5 ** D29 ** A5
-  _BV(PF6)  , // PF 6 ** D30 ** A6
-  _BV(PF7)  , // PF 7 ** D31 ** A7
+  /*  D0: */ _BV(PE0),
+  /*  D1: */ _BV(PE1),
+  /*  D2: */ _BV(PB7),
+  /*  D3: */ _BV(PE3),
+  /*  D4: */ _BV(PE4),
+  /*  D5: */ _BV(PE5),
+  /*  D6: */ _BV(PE2),
+  /*  D7: */ _BV(PE6),
+  /*  D8: */ _BV(PD5),
+  /*  D9: */ _BV(PB0),
+  /* D10: */ _BV(PB2),
+  /* D11: */ _BV(PB3),
+  /* D12: */ _BV(PB1),
+  /* D13: */ _BV(PD2),
+  /* D14: */ _BV(PD3),
+  /* D15: */ _BV(PD0),
+  /* D16: */ _BV(PD1),
+  /* D17: */ _BV(PD4),
+  /* D18: */ _BV(PE7),
+  /* D19: */ _BV(PD6),
+  /* D20: */ _BV(PD7),
+  /* D21: */ _BV(PB4),
+  /* D22: */ _BV(PB5),
+  /* D23: */ _BV(PB6),
+  /* D24: */ _BV(PF0),
+  /* D25: */ _BV(PF1),
+  /* D26: */ _BV(PF2),
+  /* D27: */ _BV(PF3),
+  /* D28: */ _BV(PF4),
+  /* D29: */ _BV(PF5),
+  /* D30: */ _BV(PF6),
+  /* D31: */ _BV(PF7),
 };
 
 const uint8_t PROGMEM digital_pin_to_timer_PGM[] = {
-  // TIMERS
-  // ~: PWM, *: external interrupt
-  // -------------------------------------------
-  NOT_ON_TIMER  , // PE 0 ** D0  ** USART0_RX
-  NOT_ON_TIMER  , // PE 1 ** D1  ** USART0_TX
-  TIMER0A       , // PB 7 ** D2  ** D2~ OC1C
-  TIMER3A       , // PE 3 ** D3  ** D3~ OC3A
-  TIMER3B       , // PE 4 ** D4  ** D4*~ OC3B
-  TIMER3C       , // PE 5 ** D5  ** D5*~ OC3C
-  NOT_ON_TIMER  , // PE 2 ** D6  ** D6
-  NOT_ON_TIMER  , // PE 6 ** D7  ** D7*
-  NOT_ON_TIMER  , // PD 5 ** D8  ** D8
-  NOT_ON_TIMER  , // PB 0 ** D9  ** SPI_SSN
-  NOT_ON_TIMER  , // PB 2 ** D10 ** SPI_MOSI
-  NOT_ON_TIMER  , // PB 3 ** D11 ** SPI_MISO
-  NOT_ON_TIMER  , // PB 1 ** D12 ** SPI_SCK
-  NOT_ON_TIMER  , // PD 2 ** D13 ** USART1_RX*
-  NOT_ON_TIMER  , // PD 3 ** D14 ** USART1_TX*
-  NOT_ON_TIMER  , // PD 0 ** D15 ** I2C_SCL*
-  NOT_ON_TIMER  , // PD 1 ** D16 ** I2C_SDA*
-  NOT_ON_TIMER  , // PD 4 ** D17 ** VCC_ENABLE
-  NOT_ON_TIMER  , // PE 7 ** D18 ** BATT_ALERT*
-  NOT_ON_TIMER  , // PD 6 ** D19 ** BACKPACK_BUS
-  NOT_ON_TIMER  , // PD 7 ** D20 ** CHG_STATUS
-  TIMER2A       , // PB 4 ** D21 ** LED_BLUE~ OC2A (TIMER5A)
-  TIMER1A       , // PB 5 ** D22 ** LED_RED~ OC1A (TIMER5B)
-  TIMER1B       , // PB 6 ** D23 ** LED_GREEN~ OC1B (TIMER5C)
-  NOT_ON_TIMER  , // PF 0 ** D24 ** A0
-  NOT_ON_TIMER  , // PF 1 ** D25 ** A1
-  NOT_ON_TIMER  , // PF 2 ** D26 ** A2
-  NOT_ON_TIMER  , // PF 3 ** D27 ** A3
-  NOT_ON_TIMER  , // PF 4 ** D28 ** A4
-  NOT_ON_TIMER  , // PF 5 ** D29 ** A5
-  NOT_ON_TIMER  , // PF 6 ** D30 ** A6
-  NOT_ON_TIMER  , // PF 7 ** D31 ** A7
+  /*  D0: */ NOT_ON_TIMER,
+  /*  D1: */ NOT_ON_TIMER,
+  /*  D2: */ TIMER0A,
+  /*  D3: */ TIMER3A,
+  /*  D4: */ TIMER3B,
+  /*  D5: */ TIMER3C,
+  /*  D6: */ NOT_ON_TIMER,
+  /*  D7: */ NOT_ON_TIMER,
+  /*  D8: */ NOT_ON_TIMER,
+  /*  D9: */ NOT_ON_TIMER,
+  /* D10: */ NOT_ON_TIMER,
+  /* D11: */ NOT_ON_TIMER,
+  /* D12: */ NOT_ON_TIMER,
+  /* D13: */ NOT_ON_TIMER,
+  /* D14: */ NOT_ON_TIMER,
+  /* D15: */ NOT_ON_TIMER,
+  /* D16: */ NOT_ON_TIMER,
+  /* D17: */ NOT_ON_TIMER,
+  /* D18: */ NOT_ON_TIMER,
+  /* D19: */ NOT_ON_TIMER,
+  /* D20: */ NOT_ON_TIMER,
+  /* D21: */ TIMER2A,
+  /* D22: */ TIMER1A,
+  /* D23: */ TIMER1B,
+  /* D24: */ NOT_ON_TIMER,
+  /* D25: */ NOT_ON_TIMER,
+  /* D26: */ NOT_ON_TIMER,
+  /* D27: */ NOT_ON_TIMER,
+  /* D28: */ NOT_ON_TIMER,
+  /* D29: */ NOT_ON_TIMER,
+  /* D30: */ NOT_ON_TIMER,
+  /* D31: */ NOT_ON_TIMER,
 };
 
 #endif
