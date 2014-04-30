@@ -102,6 +102,23 @@
 // PG2 AMR
 // PG1 DIG1
 // PG0 DIG3
+//
+// Interrupt mapping
+//   Note that the interrupt numbers (as passed to attachInterrupt) do
+//   _not_ correspond directly to the INTx values in the datasheet,
+//   due to the way the Arduino core maps them (probably for backward
+//   compatibility).
+//
+// Number  Pin          Datasheet name
+// 0       D4           INT4
+// 1       D5           INT5
+// 2       SCL          INT0
+// 3       SDA          INT1
+// 4       RX1          INT2
+// 5       TX1          INT3
+// 6       D7           INT6
+// 7       BATT_ALERT   INT7
+//
 
 #define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 24) ? (&PCICR) : ((uint8_t *)0))
 #define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
