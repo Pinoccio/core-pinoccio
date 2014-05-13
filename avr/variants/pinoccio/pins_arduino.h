@@ -32,11 +32,15 @@
 #define analogInputToDigitalPin(p)  ((p < 8) ? (p) + 24 : -1)
 #define digitalPinHasPWM(p)         ((p) == 2 || (p) == 3 || (p) == 4 || (p) == 5 || (p) == 21 || (p) == 22 || (p) == 23)
 
+#define RX0             0
+#define TX0             1
+
 #define SS              9
 #define MOSI            10
 #define MISO            11
 #define SCK             12
-
+#define RX1             13
+#define TX1             14
 #define SCL             15
 #define SDA             16
 
