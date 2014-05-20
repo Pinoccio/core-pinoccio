@@ -45,7 +45,7 @@
 #define SDA             16
 
 #define VCC_ENABLE      17
-#define BATT_ALARM      18
+#define BATT_ALERT      18
 #define BACKPACK_BUS    19
 #define CHG_STATUS      20
 #define LED_BLUE        21
