@@ -35,6 +35,14 @@
 #define RX0             0
 #define TX0             1
 
+#define D2              2
+#define D3              3
+#define D4              4
+#define D5              5
+#define D6              6
+#define D7              7
+#define D8              8
+
 #define SS              9
 #define MOSI            10
 #define MISO            11
