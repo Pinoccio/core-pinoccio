@@ -20,10 +20,15 @@ pinoccio.menu.cpu.atmega256rfr2=ATmega256RFR2
 pinoccio.menu.cpu.atmega256rfr2.build.mcu=atmega256rfr2
 pinoccio.menu.cpu.atmega256rfr2.upload.maximum_size=253952
 pinoccio.menu.cpu.atmega256rfr2.upload.speed=115200
+# !CKDIV8, !CKOUT, SUT=10, CKSEL=1110 (16mhz tranceiver clk)
 pinoccio.menu.cpu.atmega256rfr2.bootloader.low_fuses=0xDE
+# !OCDEN, !JTAGEN, SPIEN, !WDTON, EESAVE, BOOTSZ=00 (4k words, @3E000 byte addr), BOOTRST
 pinoccio.menu.cpu.atmega256rfr2.bootloader.high_fuses=0xD0
+# BODLEVEL=110 (1.8V)
 pinoccio.menu.cpu.atmega256rfr2.bootloader.extended_fuses=0xFE
+# BLB1=11, BLB0=11, LB=11 (unlocked)
 pinoccio.menu.cpu.atmega256rfr2.bootloader.unlock_bits=0x3F
+# BLB1=10 (boot section read-only), BLB0=11 (app section unlocked), LB=11 (unlocked)
 pinoccio.menu.cpu.atmega256rfr2.bootloader.lock_bits=0x2F
 pinoccio.menu.cpu.atmega256rfr2.bootloader.file=STK500RFR2/release_0.51/boot_pinoccio.hex
 
