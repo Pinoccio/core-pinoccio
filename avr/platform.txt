@@ -60,3 +60,11 @@ recipe.size.regex.eeprom=^(?:\.eeprom)\s+([0-9]+).*
 # - from numeric vendor ID, set to Unknown otherwise
 build.usb_manufacturer=
 build.usb_flags=-DUSB_VID={build.vid} -DUSB_PID={build.pid} '-DUSB_MANUFACTURER={build.usb_manufacturer}' '-DUSB_PRODUCT={build.usb_product}'
+
+
+# This assumes that the "pinoccio" program is in the search PATH
+# https://www.npmjs.org/package/pinoccio
+tools.pinoccio_ota.cmd.path=pinoccio
+tools.pinoccio_ota.program.params.verbose=--verbose
+tools.pinoccio_ota.program.params.quiet=
+tools.pinoccio_ota.program.pattern="{cmd.path}" ota {program.verbose} {program.extra_params} --ide --device {serial.port} --hex {build.path}/{build.project_name}.hex

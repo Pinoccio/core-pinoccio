@@ -1,0 +1,9 @@
+pinoccio_ota_auto.name=Over-the-Air programming for Pinoccio (first target already in OTA mode)
+pinoccio_ota_auto.communication=serial
+pinoccio_ota_auto.program.tool=pinoccio_ota
+pinoccio_ota_auto.program.extra_params=--broadcast
+
+pinoccio_ota_default.name=Over-the-Air programming for Pinoccio (selected target, switch to OTA mode)
+pinoccio_ota_default.communication=serial
+pinoccio_ota_default.program.tool=pinoccio_ota
+pinoccio_ota_default.program.extra_params=--reboot
