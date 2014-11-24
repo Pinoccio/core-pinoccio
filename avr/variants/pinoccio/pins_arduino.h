@@ -71,6 +71,8 @@
 #define A6              30
 #define A7              31
 
+#define analogPinToChannel(p) ((p)>=A0?(p)-A0:(p))
+
 // ~: PWM, *: external interrupt
 // Pin num   Pin functions     Connected to / label on board
 // D0:  PE0  RXD0/PCINT8       RX0 (Connected to 16u2 USB chip)
