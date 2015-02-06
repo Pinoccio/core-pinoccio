@@ -134,10 +134,25 @@
 // 7       BATT_ALERT   INT7
 //
 
-#define digitalPinToPCICR(p)    (((p) >= 0 && (p) <= 24) ? (&PCICR) : ((uint8_t *)0))
-#define digitalPinToPCICRbit(p) (((p) <= 7) ? 2 : (((p) <= 13) ? 0 : 1))
-#define digitalPinToPCMSK(p)    (((p) <= 7) ? (&PCMSK2) : (((p) <= 13) ? (&PCMSK0) : (((p) <= 24) ? (&PCMSK1) : ((uint8_t *)0))))
-#define digitalPinToPCMSKbit(p) (((p) <= 7) ? (p) : (((p) <= 13) ? ((p) - 8) : ((p) - 14)))
+// Arduino.h only defines the Px constants when ARDUINO_MAIN is defined,
+// so we just copy it here (with a PINOCCIO_ prefix to prevent
+// collisions).
+#define PINOCCIO_PB 2
+// Function to convert a mask with a single bit enabled back to the bit
+// number of the enabled bit. We need this, because digitalPinToBitMask
+// returns a bitmask and we want to use it in digitalPinToPCMSKbit,
+// which uses a bit number...
+#ifdef __cplusplus
+constexpr
+#endif
+inline uint8_t pinoccio_mask_to_bit(uint8_t mask) {
+  return (mask == 0) ? -1 : (pinoccio_mask_to_bit(mask >> 1) + 1);
+}
+
+#define digitalPinToPCICR(p)    ((p) == 0 || digitalPinToPort(p) == PINOCCIO_PB ? (&PCICR) : ((uint8_t *)0))
+#define digitalPinToPCICRbit(p) ((p) == 0 ? PCIE1 : (digitalPinToPort(p) == PINOCCIO_PB ? PCIE0 : 0))
+#define digitalPinToPCMSK(p)    ((p) == 0 ? (&PCMSK1) : (digitalPinToPort(p) == PINOCCIO_PB ? &PCMSK0 :((uint8_t *)0)))
+#define digitalPinToPCMSKbit(p) ((p) == 0 ? PCINT8 : (digitalPinToPort(p) == PINOCCIO_PB ? pinoccio_mask_to_bit(digitalPinToBitMask(p)) : -1))
 
 #ifdef ARDUINO_MAIN
 
