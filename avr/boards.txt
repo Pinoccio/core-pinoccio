@@ -30,7 +30,7 @@ pinoccio.menu.cpu.atmega256rfr2.bootloader.extended_fuses=0xFE
 pinoccio.menu.cpu.atmega256rfr2.bootloader.unlock_bits=0x3F
 # BLB1=10 (boot section read-only), BLB0=11 (app section unlocked), LB=11 (unlocked)
 pinoccio.menu.cpu.atmega256rfr2.bootloader.lock_bits=0x2F
-pinoccio.menu.cpu.atmega256rfr2.bootloader.file=pinoccio_bootloader_v1.0.hex
+pinoccio.menu.cpu.atmega256rfr2.bootloader.file=pinoccio_bootloader_v1.0a.hex
 
 pinoccio.menu.cpu.atmega128rfa1=ATmega128RFA1 (early prototype)
 pinoccio.menu.cpu.atmega128rfa1.build.mcu=atmega128rfa1
